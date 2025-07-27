@@ -1,0 +1,21 @@
+const express = require('express');
+const router = express.Router();
+const churchController = require('../controllers/churchController');
+const churchGoerController = require('../controllers/churchGoerController');
+const attendanceController = require('../controllers/attendanceController');
+
+// Attendance
+router.get('/attendances', attendanceController.getAllAttendances);
+router.post('/insertAttendance', attendanceController.insertAttendance);
+
+// Church
+router.get('/churches', churchController.getAllChurches);
+router.post('/checkChurchName', churchController.checkChurchName);
+router.post('/insertChurch', churchController.insertChurch);
+
+// Church Goer
+router.get('/churchgoers', churchGoerController.getAllChurchGoers);
+router.post('/checkChurchGoer', churchGoerController.checkChurchGoer);
+router.post('/insertChurchGoer', churchGoerController.insertChurchGoer);
+
+module.exports = router;

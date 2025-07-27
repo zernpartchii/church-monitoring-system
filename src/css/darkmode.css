@@ -1,0 +1,27 @@
+/* Dark mode */
+body.dark {
+    background-color: #121212;
+    color: #eee;
+}
+
+body.dark .topbar {
+    background-color: #121212;
+    color: #eee;
+}
+
+body.dark .hover:hover {
+    background-color: #1f1f1f;
+    transition: background-color 0.3s ease;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+body.dark .titleNav,
+body.dark .icon {
+    color: #eee;
+}
+
+body.dark .card {
+    background-color: #212529;
+    color: #eee;
+}
