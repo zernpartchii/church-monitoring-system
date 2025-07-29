@@ -8,6 +8,10 @@ import AddChurch from './church/AddChurch';
 import Dashboard from './dashboard/Dashboard';
 import ViewAttendance from './attendance/ViewAttendance';
 import AccountInfo from './settings/AccountInfo';
+
+//Import Admin component
+import AdminDashboard from './admin/Dashboard';
+import ViewRequest from './admin/viewRequest/ViewRequest';
 function App() {
   return (
     <Router>
@@ -20,6 +24,10 @@ function App() {
         <Route path="/cms/dashboard" element={<Dashboard />} />
         <Route path="/cms/attendance" element={<ViewAttendance />} />
         <Route path="/cms/settings/account-info" element={<AccountInfo />} />
+
+        {/* Admin Routes */}
+        <Route path="/cms/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/cms/admin/view-request" element={<ViewRequest />} />
       </Routes>
     </Router>
   );

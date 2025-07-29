@@ -17,5 +17,7 @@ router.post('/insertChurch', churchController.insertChurch);
 router.get('/churchgoers', churchGoerController.getAllChurchGoers);
 router.post('/checkChurchGoer', churchGoerController.checkChurchGoer);
 router.post('/insertChurchGoer', churchGoerController.insertChurchGoer);
+router.put('/updateChurchGoer', churchGoerController.updateChurchGoer);
+router.delete('/deleteChurchGoer', churchGoerController.deleteChurchGoer);
 
 module.exports = router;

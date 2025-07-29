@@ -1,10 +1,12 @@
 import { React, useEffect } from 'react'
 import { Link } from 'react-router-dom';
+import { UserView } from './UserView';
 function Sidebar() {
 
     // Example: toggle mode on button click
     useEffect(() => {
         toggleMode();
+        UserView();
     }, []);
 
     const toggleMode = () => {
@@ -76,11 +78,11 @@ function Sidebar() {
                     </span>
                 </li>
             </ul>
-            <div className="card-header border-0 bg-transparent d-flex justify-content-center">
+            <div className="card-header border-0 bg-transparent d-flex justify-content-center userLogo">
                 <img src="../../cca.png" className="churchLogo" />
             </div>
             <div className="card-body p-0 mt-2 overflow-auto">
-                <ul className="list-group list-group-flush h-100 d-flex gap-1 navlist">
+                <ul className="list-group list-group-flush h-100 d-flex gap-1 navlist userNav">
                     <Link to="/cms/dashboard" className="hover list-group-item">
                         <span className="material-symbols-outlined icon">
                             home
@@ -137,6 +139,26 @@ function Sidebar() {
                             <p className="titleNav m-0">History</p>
                         </li>
                     </ul>
+                    <li className="hover list-group-item mt-auto" onClick={toggleMode}>
+                        <span className="material-symbols-outlined icon themeIcon">
+                            light_mode
+                        </span>
+                        <p className="titleNav themeTitle m-0">Light Mode</p>
+                    </li>
+                </ul>
+                <ul className="list-group list-group-flush h-100 d-flex gap-1 navlist adminNav d-none">
+                    <Link to="/cms/admin/dashboard" className="hover list-group-item">
+                        <span className="material-symbols-outlined icon">
+                            home
+                        </span>
+                        <p className="titleNav m-0">Dashboard</p>
+                    </Link>
+                    <Link to="/cms/admin/view-request" className="hover list-group-item">
+                        <span className="material-symbols-outlined icon">
+                            assignment_add
+                        </span>
+                        <p className="titleNav themeTitle m-0">View Request</p>
+                    </Link>
                     <li className="hover list-group-item mt-auto" onClick={toggleMode}>
                         <span className="material-symbols-outlined icon themeIcon">
                             light_mode

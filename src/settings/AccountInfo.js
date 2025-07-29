@@ -10,7 +10,7 @@ function AccountInfo() {
                 <div className='px-3'>
                     <h3 className="m-0">Account Information</h3>
                     <p className="m-0">Change your account information here.</p>
-                    <div className="card bg-light rounded-3 mt-3">
+                    <div className="card rounded-3 mt-3">
                         <div className="card-body d-flex flex-column gap-3">
                             <div>
                                 <label htmlFor="hostPastor" className="form-label">Host Pastor</label>
@@ -33,7 +33,7 @@ function AccountInfo() {
                             </div>
                         </div>
                     </div>
-                    <div className="card bg-light rounded-3 mt-3">
+                    <div className="card rounded-3 mt-3">
                         <div className="card-header">Church Information</div>
                         <div className="card-body d-flex flex-column gap-3">
                             <div>
@@ -47,7 +47,7 @@ function AccountInfo() {
                                     className="form-control" id="churchAddress" placeholder="Enter church address" />
                             </div>
                             <div>
-                                <button type="submit" className="btn btn-primary mt-3">Save Changes</button>
+                                <button type="submit" className="btn btn-success mt-3">Save Changes</button>
                             </div>
                         </div>
                     </div>

@@ -34,6 +34,8 @@ function Header() {
 
     const handleMenuToggle = () => {
         const sidebar = document.querySelector('.sidebar');
+        const menu = document.querySelector('.menu');
+        menu.textContent == 'left_panel_close' ? menu.textContent = 'left_panel_open' : menu.textContent = 'left_panel_close';
         if (sidebar.classList.contains('sidebarClose')) {
             sidebar.classList.remove('sidebarClose');
             sidebar.classList.add('sidebarOpen');
@@ -49,10 +51,12 @@ function Header() {
             <div className='p-2 sticky-top topbar'>
                 <div className='d-flex gap-3 align-items-center px-2'>
                     <span className="material-symbols-outlined cursor menu" onClick={handleMenuToggle}>
-                        menu_open
+                        left_panel_close
                     </span>
-                    <img src="../../cca.png" className="churchLogoMobile" />
-                    <p className="text-center fs-5 m-0">CCA New Corella</p>
+                    <div className='userTopLogo'>
+                        <img src="../../cca.png" className="churchLogoMobile" />
+                    </div>
+                    <p className="text-center fs-5 m-0 topbarTitle">CCA New Corella</p>
                 </div>
             </div>
             <hr className='m-0' />

@@ -24,3 +24,9 @@ body {
     justify-content: center;
     align-items: center;
 }
+
+.swal2-actions {
+    gap: 10px;
+    display: flex;
+    justify-content: center;
+}

@@ -2,7 +2,8 @@ const db = require('../config/db');
 
 class Churchgoer {
     static checkDuplicate(data, callback) {
-        db.query('SELECT * FROM churchgoer WHERE firstName = ? && middleName = ? && lastName = ?', data, (err, result) => {
+        console.log(data);
+        db.query('SELECT * FROM churchgoer WHERE firstName = ? && lastName = ?', data, (err, result) => {
             if (err) {
                 console.error("Duplicate check error:", err);
             } else {
@@ -26,6 +27,28 @@ class Churchgoer {
 
     static read(callback) {
         db.query('SELECT * FROM churchgoer', callback);
+    }
+
+    static update(data, id, callback) {
+        db.query('UPDATE churchgoer SET ? WHERE id = ?', [data, id], (err, result) => {
+            if (err) {
+                console.error("Update error:", err);
+            } else {
+                console.log("Update result:", result);
+            }
+            callback(err, result);
+        });
+    }
+
+    static delete(id, callback) {
+        db.query('DELETE FROM churchgoer WHERE id = ?', id, (err, result) => {
+            if (err) {
+                console.error("Delete error:", err);
+            } else {
+                console.log("Delete result:", result);
+            }
+            callback(err, result);
+        });
     }
 }
 module.exports = Churchgoer;
