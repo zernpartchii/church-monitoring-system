@@ -2,7 +2,6 @@ import React, { useState, useEffect, use } from 'react'
 import Sidebar from '../components/Sidebar'
 import Header from '../components/Header'
 import ChurchgoerModal from './ChurchgoerModal';
-import Attendance from './Attendance';
 import Axios from 'axios';
 import Swal from 'sweetalert2';
 
@@ -46,6 +45,8 @@ function ViewAttendance() {
     const [year, setYear] = useState(today.getFullYear()); // dynamically use current yearx)
     const [sundays, setSundays] = useState([]);
     const [sortOrder, setSortOrder] = useState('asc');
+    const [churchgoers, setChurchgoers] = useState([]);
+    const [userData, setUserData] = useState([]);
     const [attendance, setAttendance] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [viewMode, setViewMode] = useState('Sundays');
@@ -125,6 +126,7 @@ function ViewAttendance() {
                 });
 
                 setAttendance(mapped);
+                setChurchgoers(churchgoers);
             })
             .catch((error) => {
                 console.error(error);
@@ -152,6 +154,9 @@ function ViewAttendance() {
         const refresh = document.querySelector('.refreshAttendance');
         refresh.addEventListener('click', () => {
             refreshAttendance();
+
+            document.querySelector('.searchChurchgoer').value = '';
+            setSearchTerm('');
         });
         refresh.click();
     }, []);
@@ -246,10 +251,9 @@ function ViewAttendance() {
         const viewModes = viewMode === 'Sundays' ? label + ' Sunday' : 'Day';
         const formatDate = (date) => {
             const d = new Date(date);
-            const day = String(d.getDate()).padStart(2, '0');
-            const month = String(d.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
-            const year = d.getFullYear();
-            return `${day}//${month}//${year}`;
+            const day = d.getDate(); // No need to pad
+            const month = d.toLocaleString('default', { month: 'long' }); // "July", "August", etc.
+            return `${month} ${day} `;
         };
         return {
             key: idx,
@@ -261,7 +265,7 @@ function ViewAttendance() {
             ),
             control: (
                 <td key={`control-${idx}`}>
-                    <div className='center gap-1'>
+                    <div className={`center gap-1 ${attendance.length > 0 ? 'd-flex' : 'd-none'}`}>
                         <button type='button' className='btnEditAttendance badge btn btn-secondary btn-sm'>
                             Edit
                         </button>
@@ -277,12 +281,21 @@ function ViewAttendance() {
         };
     });
 
+    const handleEditChurchgoer = (userID) => {
+        churchgoers.forEach((churchgoer) => {
+            if (churchgoer.id === userID) {
+                // console.log(churchgoer);
+                setUserData(churchgoer);
+            }
+        })
+    }
+
     return (
         <div className="d-flex vh-100">
             <Sidebar />
             <div className="w-100 overflow-auto">
                 <Header />
-                <Attendance />
+                <ChurchgoerModal userData={userData} />
                 <div className='p-3'>
                     <h3 className="text-start">Attendance</h3>
                     <div className="card rounded-3 mt-3">
@@ -291,13 +304,11 @@ function ViewAttendance() {
                             <p>Easily check your attendance records here.</p>
                         </div>
                         <div className="card-body p-3">
-                            <h4 className="text-center mb-3">Church Attendance - {new Date(year, month).toLocaleString('default', { month: 'long' })} {year}</h4>
-
+                            <h4 className="text-center mb-3">
+                                Church Attendance - {new Date(year, month).toLocaleString('default', { month: 'long' })} {year}
+                            </h4>
                             <div className='flex-wrap center gap-2 mb-3'>
                                 <div className="d-flex flex-wrap center gap-2">
-                                    <button type="button" className="btn btn-secondary refreshAttendance d-none">
-                                        Refresh
-                                    </button>
                                     <div className="d-flex gap-2">
                                         <select
                                             className="form-select"
@@ -326,10 +337,13 @@ function ViewAttendance() {
                                     <button type="button" className="btn btn-success" data-bs-toggle="modal" data-bs-target="#addChurchgoerModal">
                                         Add
                                     </button>
+                                    <button type="button" className="btn btn-secondary refreshAttendance d-none">
+                                        Refresh
+                                    </button>
                                     {/* Search Funtionality */}
                                     <input
                                         type="text"
-                                        className="form-control"
+                                        className="form-control searchChurchgoer"
                                         placeholder="Search name here..."
                                         value={searchTerm}
                                         onChange={e => setSearchTerm(e.target.value)}
@@ -346,7 +360,7 @@ function ViewAttendance() {
                                             <th style={{ cursor: 'pointer' }} >
                                                 <div className='d-flex px-2'>
                                                     <span className='me-auto' onClick={sortAttendanceByName}>FullName {sortOrder === 'asc' ? '↑' : '↓'}</span>
-                                                    <span class="material-symbols-outlined btnFilter" onClick={sortAttendanceByDate}>
+                                                    <span className="material-symbols-outlined btnFilter" onClick={sortAttendanceByDate}>
                                                         date_range
                                                     </span>
                                                 </div>
@@ -360,54 +374,60 @@ function ViewAttendance() {
                                         </tr>
                                     </thead>
                                     <tbody className='align-middle'>
-                                        {attendance.filter(user =>
-                                            user.name.toLowerCase().includes(searchTerm.trim().toLowerCase())
-                                        ).map((user, userIdx) => (
-                                            <tr key={userIdx}>
-                                                <td>{user.id}</td>
-                                                <td className="text-start center ps-3 " style={{ minWidth: '200px' }}>
-                                                    <span className='me-auto'>{user.name}</span>
-                                                    <button className='btn btn-secondary badge btnEditChurchgoer' data-bs-toggle="modal" data-bs-target="#addChurchgoerModal">Edit</button>
-                                                </td>
-
-                                                {sundays.map((date, sundayIdx) => (
-                                                    <td key={sundayIdx}>
-                                                        <div className='center gap-3' style={{ minWidth: '150px' }}>
-                                                            <input
-                                                                type="checkbox" disabled
-                                                                className={`form-check-input border m-0 attendanceStatus sundayIdx${sundayIdx} 
-                                                                        ${user.records[sundayIdx] === 'Present'
-                                                                        ? 'bg-success border-success'
-                                                                        : user.records[sundayIdx] === 'Absent'
-                                                                            ? 'border-danger'
-                                                                            : 'border-secondary'}`}
-                                                                style={{ padding: '10px' }}
-                                                                id={`attendance-${userIdx}${sundayIdx}`}
-                                                                checked={user.records[sundayIdx] === 'Present'}
-                                                                onChange={() => toggleAttendance(userIdx, sundayIdx)}
-                                                                value={`${user.id}|${sundayIdx + 1}|${date.toLocaleDateString('en-CA').replace(/-/g, '/')}|${user.records[sundayIdx] === 'Visitor'
-                                                                    ? 'Visitor' // leave label empty until clicked
-                                                                    : user.records[sundayIdx]}`}
-                                                            />
-
-                                                            <label htmlFor={`attendance-${userIdx}${sundayIdx}`}
-                                                                className={`ms-2 ${user.records[sundayIdx] === 'Present'
-                                                                    ? 'text-success'
-                                                                    : user.records[sundayIdx] === 'Visitor'
-                                                                        ? 'text-secondary'
-                                                                        : 'text-danger'
-                                                                    }`}>
-                                                                {user.records[sundayIdx] === 'Visitor'
-                                                                    ? 'Visitor' // leave label empty until clicked
-                                                                    : user.records[sundayIdx]}
-                                                            </label>
-
-
-                                                        </div>
+                                        {attendance.length > 0 ? (
+                                            attendance.filter(user =>
+                                                user.name.toLowerCase().includes(searchTerm.trim().toLowerCase())
+                                            ).map((user, userIdx) => (
+                                                <tr key={userIdx}>
+                                                    <td>{user.id}</td>
+                                                    <td className="text-start center ps-3 " style={{ minWidth: '260px' }}>
+                                                        <span className='me-auto'>{user.name}</span>
+                                                        <button className='btn btn-secondary badge btnEditChurchgoer' type="button" onClick={() => handleEditChurchgoer(user.id)} data-bs-toggle="modal" data-bs-target="#addChurchgoerModal">Edit</button>
                                                     </td>
-                                                ))}
+
+                                                    {sundays.map((date, sundayIdx) => (
+                                                        <td key={sundayIdx}>
+                                                            <div className='gap-3' style={{ minWidth: '120px' }}>
+                                                                <input
+                                                                    type="checkbox" disabled
+                                                                    className={`form-check-input border m-0 attendanceStatus sundayIdx${sundayIdx} 
+                                                                        ${user.records[sundayIdx] === 'Present'
+                                                                            ? 'bg-success border-success'
+                                                                            : user.records[sundayIdx] === 'Absent'
+                                                                                ? 'border-danger'
+                                                                                : 'border-secondary'}`}
+                                                                    style={{ padding: '10px' }}
+                                                                    id={`attendance-${userIdx}${sundayIdx}`}
+                                                                    checked={user.records[sundayIdx] === 'Present'}
+                                                                    onChange={() => toggleAttendance(userIdx, sundayIdx)}
+                                                                    value={`${user.id}|${sundayIdx + 1}|${date.toLocaleDateString('en-CA').replace(/-/g, '/')}|${user.records[sundayIdx] === 'Visitor'
+                                                                        ? 'Visitor' // leave label empty until clicked
+                                                                        : user.records[sundayIdx]}`}
+                                                                />
+
+                                                                <label htmlFor={`attendance-${userIdx}${sundayIdx}`}
+                                                                    className={`ms-2 ${user.records[sundayIdx] === 'Present'
+                                                                        ? 'text-success'
+                                                                        : user.records[sundayIdx] === 'Visitor'
+                                                                            ? 'text-secondary'
+                                                                            : 'text-danger'
+                                                                        }`}>
+                                                                    {user.records[sundayIdx] === 'Visitor'
+                                                                        ? 'Visitor' // leave label empty until clicked
+                                                                        : user.records[sundayIdx]}
+                                                                </label>
+
+
+                                                            </div>
+                                                        </td>
+                                                    ))}
+                                                </tr>
+                                            ))
+                                        ) : (
+                                            <tr>
+                                                <td colSpan={sundayColumns.length + 2}>No churchgoers found.</td>
                                             </tr>
-                                        ))}
+                                        )}
                                     </tbody>
                                 </table>
                             </div>
@@ -415,7 +435,6 @@ function ViewAttendance() {
                     </div>
                 </div>
             </div>
-            <ChurchgoerModal />
         </div>
     )
 }
