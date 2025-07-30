@@ -25,6 +25,11 @@ body {
     align-items: center;
 }
 
+.flex {
+    display: flex;
+    gap: 10px;
+}
+
 .swal2-actions {
     gap: 10px;
     display: flex;
