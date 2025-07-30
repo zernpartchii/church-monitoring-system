@@ -14,12 +14,12 @@ function Login() {
     return (
         <div className='vh-100'>
             <div className='center h-100'>
-                <form className="card p-3" style={{ width: '450px' }}>
+                <form className="card border-0 p-3 m-3" style={{ maxWidth: '500px' }}>
+                    <div className='card-header bg-transparent'>
+                        <h2>Worship Track</h2>
+                        <p>Your secure entry to monitor, manage, and serve.</p>
+                    </div>
                     <div className='card-body d-flex gap-3 flex-column'>
-                        <div>
-                            <h2>Worship Track</h2>
-                            <p>Your secure entry to monitor, manage, and serve.</p>
-                        </div>
                         <div>
                             <label htmlFor="username" className="form-label">Username or Email</label>
                             <input type="text" className="form-control" id="username" placeholder="Enter your username or email" />

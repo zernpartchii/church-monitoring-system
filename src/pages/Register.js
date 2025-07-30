@@ -83,13 +83,13 @@ const Register = () => {
 
     return (
         <div className='vh-100'>
-            <div className='center h-100'>
-                <form onSubmit={handleSubmit} className='card p-3' style={{ width: '700px' }}>
+            <div className='center'>
+                <form className='card border-0 p-3 m-3' onSubmit={handleSubmit} style={{ maxWidth: '700px' }}>
+                    <div className='card-header bg-transparent'>
+                        <h2>Worship Track</h2>
+                        <p>Your secure entry to monitor, manage, and serve.</p>
+                    </div>
                     <div className="card-body d-flex gap-3 flex-column" >
-                        <div>
-                            <h2>Worship Track</h2>
-                            <p>Your secure entry to monitor, manage, and serve.</p>
-                        </div>
                         <div className='flex-fill'>
                             <label htmlFor="churchName" className="form-label">Church Name</label>
                             <input type="text" required value={church.churchName} onChange={handleChurchChange} className="form-control" id="churchName" placeholder="Enter church name" />
@@ -100,13 +100,19 @@ const Register = () => {
                         </div>
                         <div className='flex-fill'>
                             <label htmlFor="hostPastor" className="form-label">Host Pastor</label>
-                            <div className='d-flex flex'>
-                                <input type="text" required value={pastors.firstName} onChange={handlePastorsChange} className="form-control" id="firstName" placeholder="First Name" />
-                                <input type="text" value={pastors.middleName} onChange={handlePastorsChange} className="form-control" id="middleName" placeholder="Middle Name" />
-                                <input type="text" required value={pastors.lastName} onChange={handlePastorsChange} className="form-control" id="lastName" placeholder="Last Name" />
+                            <div className='flex flex-wrap'>
+                                <div className='flex-fill'>
+                                    <input type="text" required value={pastors.firstName} onChange={handlePastorsChange} className="form-control" id="firstName" placeholder="First Name" />
+                                </div>
+                                <div className='flex-fill'>
+                                    <input type="text" value={pastors.middleName} onChange={handlePastorsChange} className="form-control" id="middleName" placeholder="Middle Name" />
+                                </div>
+                                <div className='flex-fill'>
+                                    <input type="text" required value={pastors.lastName} onChange={handlePastorsChange} className="form-control" id="lastName" placeholder="Last Name" />
+                                </div>
                             </div>
                         </div>
-                        <div className='flex'>
+                        <div className='flex flex-wrap'>
                             <div className='flex-fill'>
                                 <label htmlFor="gender" className="form-label">Gender</label>
                                 <select required value={pastors.gender} onChange={handlePastorsChange} className="form-select" id="gender">
@@ -124,7 +130,7 @@ const Register = () => {
                             <label htmlFor="address" className="form-label">Address</label>
                             <input type="text" required value={pastors.address} onChange={handlePastorsChange} className="form-control" id="address" placeholder="Enter your address" />
                         </div>
-                        <div className='flex'>
+                        <div className='flex flex-wrap'>
                             <div className='flex-fill'>
                                 <label htmlFor="exampleFormControlInput1" className="form-label">Email address</label>
                                 <input type="email" value={pastors.email} onChange={handlePastorsChange} className="form-control" id="exampleFormControlInput1" placeholder="name@example.com" />
@@ -134,7 +140,7 @@ const Register = () => {
                                 <input type="number" value={pastors.contactNo} onChange={handlePastorsChange} className="form-control" id="contactNo" placeholder="Enter your contact no." />
                             </div>
                         </div>
-                        <div className='flex'>
+                        <div className='flex flex-wrap'>
                             <div className='flex-fill'>
                                 <label htmlFor="password" className="form-label">Password</label>
                                 <div className='input-group'>
