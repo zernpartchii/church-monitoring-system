@@ -215,7 +215,7 @@ const ChurchgoerModal = ({ userData }) => {
                                 <div className="flex-fill">
                                     <label htmlFor="gender" className="form-label">Gender</label>
                                     <select className="form-select" id="gender" value={formData.gender || ""} onChange={handleChange} required>
-                                        <option value='' disabled selected>Select Gender</option>
+                                        <option value='' disabled>Select Gender</option>
                                         <option value="Male">Male</option>
                                         <option value="Female">Female</option>
                                     </select>

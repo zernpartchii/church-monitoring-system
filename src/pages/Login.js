@@ -4,17 +4,20 @@ function Login() {
 
     const handleShowPass = () => {
         const passwordInput = document.getElementById('password');
+        const eye = document.querySelector('.eye');
         if (passwordInput.type === 'password') {
             passwordInput.type = 'text';
+            eye.textContent = 'visibility_off';
         } else {
             passwordInput.type = 'password';
+            eye.textContent = 'visibility';
         }
     };
 
     return (
         <div className='vh-100'>
             <div className='center h-100'>
-                <form className="card border-0 p-3 m-3" style={{ maxWidth: '500px' }}>
+                <form className="card p-3 m-3" style={{ maxWidth: '500px' }}>
                     <div className='card-header bg-transparent'>
                         <h2>Worship Track</h2>
                         <p>Your secure entry to monitor, manage, and serve.</p>
@@ -29,7 +32,7 @@ function Login() {
                             <div className='input-group'>
                                 <input type="password" className="form-control" id="password" placeholder="Enter your password" />
                                 <button className="btn btn-light py-0 center btnShowPass" onClick={handleShowPass} type="button">
-                                    <span className="material-symbols-outlined">
+                                    <span className="material-symbols-outlined eye">
                                         visibility
                                     </span>
                                 </button>

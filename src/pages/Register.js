@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2';
-import { AddChurch, AddPastors } from '../church/AddChurch';
+import { AddChurch } from '../church/AddChurch';
 const Register = () => {
 
     const navigate = useNavigate();
@@ -26,6 +26,12 @@ const Register = () => {
 
     const [church, setChurch] = useState(churchData);
     const [pastors, setPastors] = useState(pastorsData);
+
+    useEffect(() => {
+        //reset fields
+        setChurch(churchData);
+        setPastors(pastorsData);
+    }, [])
 
     const handleChurchChange = (e) => {
         const { id, value } = e.target;
@@ -52,31 +58,31 @@ const Register = () => {
                 title: 'Oops...',
                 text: 'Password do not match!',
             })
+            setPastors((prevData) => ({
+                ...prevData,
+                password: '',
+                cpassword: ''
+            }));
             return;
         }
 
-        delete pastors.password;
-        delete pastors.cpassword;
-
-        AddChurch(church);
-        AddPastors(pastors);
-
-        //reset fields
-        setChurch(churchData);
-        setPastors(pastorsData);
-
-        //redirect to login
-        navigate('/cms/login');
-
+        AddChurch(church, pastors);
     }
 
     const handleShowPass = () => {
         const passwordInput = document.querySelectorAll('#password, #cpassword');
+        const eye = document.querySelectorAll('.eye');
         passwordInput.forEach((input) => {
             if (input.type === 'password') {
                 input.type = 'text';
+                eye.forEach((eyeIcon) => {
+                    eyeIcon.textContent = 'visibility_off';
+                });
             } else {
                 input.type = 'password';
+                eye.forEach((eyeIcon) => {
+                    eyeIcon.textContent = 'visibility';
+                });
             }
         });
     };
@@ -116,7 +122,7 @@ const Register = () => {
                             <div className='flex-fill'>
                                 <label htmlFor="gender" className="form-label">Gender</label>
                                 <select required value={pastors.gender} onChange={handlePastorsChange} className="form-select" id="gender">
-                                    <option value='' disabled selected>Select Gender</option>
+                                    <option value='' disabled>Select Gender</option>
                                     <option value="male">Male</option>
                                     <option value="female">Female</option>
                                 </select>
@@ -132,8 +138,8 @@ const Register = () => {
                         </div>
                         <div className='flex flex-wrap'>
                             <div className='flex-fill'>
-                                <label htmlFor="exampleFormControlInput1" className="form-label">Email address</label>
-                                <input type="email" value={pastors.email} onChange={handlePastorsChange} className="form-control" id="exampleFormControlInput1" placeholder="name@example.com" />
+                                <label htmlFor="email" className="form-label">Email address</label>
+                                <input type="email" value={pastors.email} onChange={handlePastorsChange} className="form-control" id="email" placeholder="name@example.com" />
                             </div>
                             <div className='flex-fill'>
                                 <label htmlFor="contactNo" className="form-label">Contact No.</label>
@@ -144,9 +150,9 @@ const Register = () => {
                             <div className='flex-fill'>
                                 <label htmlFor="password" className="form-label">Password</label>
                                 <div className='input-group'>
-                                    <input type="password" required value={pastors.password} onChange={handlePastorsChange} className="form-control" id="password" placeholder="Enter your password" />
+                                    <input type="password" required value={pastors.password || ""} onChange={handlePastorsChange} className="form-control" id="password" placeholder="Enter your password" />
                                     <button className="btn btn-light py-0 center btnShowPass" onClick={handleShowPass} type="button">
-                                        <span className="material-symbols-outlined">
+                                        <span className="material-symbols-outlined eye">
                                             visibility
                                         </span>
                                     </button>
@@ -155,9 +161,9 @@ const Register = () => {
                             <div className='flex-fill'>
                                 <label htmlFor="cpassword" className="form-label">Confirm Password</label>
                                 <div className='input-group'>
-                                    <input type="password" required value={pastors.cpassword} onChange={handlePastorsChange} className="form-control" id="cpassword" placeholder="Confirm your password" />
+                                    <input type="password" required value={pastors.cpassword || ""} onChange={handlePastorsChange} className="form-control" id="cpassword" placeholder="Confirm your password" />
                                     <button className="btn btn-light py-0 center btnShowPass" onClick={handleShowPass} type="button">
-                                        <span className="material-symbols-outlined">
+                                        <span className="material-symbols-outlined eye">
                                             visibility
                                         </span>
                                     </button>
