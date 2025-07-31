@@ -3,6 +3,7 @@ const router = express.Router();
 const churchController = require('../controllers/churchController');
 const churchGoerController = require('../controllers/churchGoerController');
 const attendanceController = require('../controllers/attendanceController');
+const accountController = require('../controllers/accountController');
 
 // Attendance
 router.get('/attendances', attendanceController.getAllAttendances);
@@ -19,5 +20,11 @@ router.post('/checkChurchGoer', churchGoerController.checkChurchGoer);
 router.post('/insertChurchGoer', churchGoerController.insertChurchGoer);
 router.put('/updateChurchGoer', churchGoerController.updateChurchGoer);
 router.delete('/deleteChurchGoer', churchGoerController.deleteChurchGoer);
+
+// Create Account
+router.post('/createAccount', accountController.createAccount);
+
+// Login
+router.post('/login', accountController.login);
 
 module.exports = router;

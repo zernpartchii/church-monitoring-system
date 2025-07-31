@@ -8,6 +8,7 @@ export const formatDateTime = (date) => {
     const minutes = pad(date.getMinutes());
     const seconds = pad(date.getSeconds());
 
+    // Sample Output: "2023-08-01 12:34:56"
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 };
 
@@ -19,5 +20,6 @@ export const formatDateForInput = (isoDateString) => {
     const month = String(localDate.getMonth() + 1).padStart(2, '0');
     const day = String(localDate.getDate()).padStart(2, '0');
 
+    // Sample Output: "2023-08-01"
     return `${year}-${month}-${day}`; // Matches <input type="date"> format
 };
