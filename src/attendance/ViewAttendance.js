@@ -5,20 +5,6 @@ import ChurchgoerModal from './ChurchgoerModal';
 import Axios from 'axios';
 import Swal from 'sweetalert2';
 
-const getSundaysInMonth = (year, month) => {
-    const sundays = [];
-    const date = new Date(year, month, 1);
-
-    while (date.getMonth() === month) {
-        if (date.getDay() === 0) {
-            sundays.push(new Date(date));
-        }
-        date.setDate(date.getDate() + 1);
-    }
-
-    return sundays;
-};
-
 const getDaysInMonthByType = (year, month, type = 'Sundays') => {
     const dates = [];
     const date = new Date(year, month, 1);
@@ -300,14 +286,32 @@ function ViewAttendance() {
                     <h3 className="text-start">Attendance</h3>
                     <div className="card rounded-3 mt-3">
                         <div className="card-header">
-                            <h5>View Attendance</h5>
-                            <p>Easily check your attendance records here.</p>
-                        </div>
-                        <div className="card-body p-3">
-                            <h4 className="text-center mb-3">
+                            <h4>
                                 Church Attendance - {new Date(year, month).toLocaleString('default', { month: 'long' })} {year}
                             </h4>
-                            <div className='flex-wrap center gap-2 mb-3'>
+                            <p className='m-0'>Easily check your attendance records here.</p>
+                        </div>
+                        <div className="card-body">
+                            <div className='flex-end flex-wrap gap-2 mb-3'>
+                                <div>
+                                    <div className="input-group center">
+                                        <button type="button" className="btn btn-success btnAddChurch" data-bs-toggle="modal" data-bs-target="#addChurchgoerModal">
+                                            Add
+                                        </button>
+                                        <button type="button" className="btn btn-secondary refreshAttendance d-none">
+                                            Refresh
+                                        </button>
+                                        {/* Search Funtionality */}
+                                        <input
+                                            type="text"
+                                            className="form-control searchChurchgoer"
+                                            placeholder="Search name here..."
+                                            value={searchTerm}
+                                            onChange={e => setSearchTerm(e.target.value)}
+                                            style={{ maxWidth: '340px' }}
+                                        />
+                                    </div>
+                                </div>
                                 <div className="d-flex flex-wrap center gap-2">
                                     <div className="d-flex gap-2">
                                         <select
@@ -332,23 +336,6 @@ function ViewAttendance() {
                                             style={{ width: '100px' }}
                                         />
                                     </div>
-                                </div>
-                                <div className="input-group center">
-                                    <button type="button" className="btn btn-success btnAddChurch" data-bs-toggle="modal" data-bs-target="#addChurchgoerModal">
-                                        Add
-                                    </button>
-                                    <button type="button" className="btn btn-secondary refreshAttendance d-none">
-                                        Refresh
-                                    </button>
-                                    {/* Search Funtionality */}
-                                    <input
-                                        type="text"
-                                        className="form-control searchChurchgoer"
-                                        placeholder="Search name here..."
-                                        value={searchTerm}
-                                        onChange={e => setSearchTerm(e.target.value)}
-                                        style={{ maxWidth: '340px' }}
-                                    />
                                 </div>
                             </div>
 

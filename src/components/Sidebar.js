@@ -5,20 +5,17 @@ function Sidebar() {
 
     // Example: toggle mode on button click
     useEffect(() => {
-        toggleMode();
+        setTheme();
         UserView();
     }, []);
 
-    const toggleMode = () => {
+    const setTheme = () => {
         const themeIcon = document.querySelector('.themeIcon');
         const themeTitle = document.querySelector('.themeTitle');
         const sidebar = document.querySelector('.sidebar');
-
         const table = document.querySelector('.table');
-
         const theme = localStorage.getItem('theme');
-        if (theme === 'dark') {
-            localStorage.setItem('theme', 'light');
+        if (theme === 'light_mode') {
 
             document.body.classList.add('light');
             document.body.classList.remove('dark');
@@ -33,8 +30,8 @@ function Sidebar() {
                 table.classList.remove('table-dark');
                 table.classList.add('table-body');
             }
-        } else {
-            localStorage.setItem('theme', 'dark'); // Default theme
+
+        } else if (theme === 'dark_mode') {
 
             document.body.classList.remove('light');
             document.body.classList.add('dark');
@@ -50,6 +47,16 @@ function Sidebar() {
                 table.classList.add('table-dark');
             }
         }
+    }
+
+    const toggleMode = () => {
+        const theme = localStorage.getItem('theme');
+        if (theme === 'dark_mode') {
+            localStorage.setItem('theme', 'light_mode');
+        } else {
+            localStorage.setItem('theme', 'dark_mode');
+        }
+        setTheme();
     };
 
     const handleCloseSidebar = () => {
@@ -66,7 +73,7 @@ function Sidebar() {
     };
 
     const handleLogout = () => {
-        localStorage.removeItem('sidebarStatus');
+        // localStorage.removeItem('theme');
     };
 
     return (
