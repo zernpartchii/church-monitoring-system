@@ -39,11 +39,9 @@ function Header() {
         if (sidebar.classList.contains('sidebarClose')) {
             sidebar.classList.remove('sidebarClose');
             sidebar.classList.add('sidebarOpen');
-            localStorage.setItem('sidebarStatus', 'open');
         } else {
             sidebar.classList.remove('sidebarOpen');
             sidebar.classList.add('sidebarClose');
-            localStorage.setItem('sidebarStatus', 'close');
         }
     };
     return (

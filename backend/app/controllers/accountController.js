@@ -62,7 +62,7 @@ exports.login = async (req, res) => {
             icon: result.icon,
             message: result.message,
             text: result.text,
-            user: result.user
+            token: result.token
         });
     });
 };
