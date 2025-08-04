@@ -61,8 +61,6 @@ class AccountModel {
                     churchName: user.churchName,
                     userID: user.userID,
                     role: user.role,
-                    username: user.username,
-                    email: user.email,
                     firstName: user.firstName,
                     lastName: user.lastName
                 }

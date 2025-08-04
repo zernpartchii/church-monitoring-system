@@ -73,7 +73,7 @@ function Sidebar() {
     };
 
     const handleLogout = () => {
-        // localStorage.removeItem('theme');
+        localStorage.removeItem('cmsUserToken');
     };
 
     return (

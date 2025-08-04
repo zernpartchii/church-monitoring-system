@@ -163,40 +163,47 @@ function ViewAttendance() {
         const btnSaveAttendance = document.querySelectorAll('.btnSaveAttendance');
         btnEdit.forEach((btn, index) => {
             btn.addEventListener('click', () => {
-                const sundayIdx = document.querySelectorAll(`.sundayIdx${index}`);
-                sundayIdx.forEach((sunday, sundayIndex) => {
-                    // console.log(sunday.value)
-                    sunday.removeAttribute('disabled');
+                const selectStatus = document.querySelectorAll(`.selectStatus${index}`);
+                const statusValue = document.querySelectorAll(`.statusValue${index}`);
+
+                selectStatus.forEach((status, statusIndex) => {
+                    status.classList.remove('d-none');
+                    statusValue[statusIndex].classList.add('d-none');
                 })
-                btnSaveAttendance[index].removeAttribute('disabled');
+
+                btnSaveAttendance[index].classList.remove('d-none');
                 btnCancelAttendance[index].classList.remove('d-none');
                 btnEdit[index].classList.add('d-none');
             })
         })
         btnCancelAttendance.forEach((btn, index) => {
             btn.addEventListener('click', () => {
-                const sundayIdx = document.querySelectorAll(`.sundayIdx${index}`);
-                sundayIdx.forEach((sunday, sundayIndex) => {
-                    // console.log(sunday.value)
-                    sunday.setAttribute('disabled', 'true');
+                const selectStatus = document.querySelectorAll(`.selectStatus${index}`);
+                const statusValue = document.querySelectorAll(`.statusValue${index}`);
+
+                selectStatus.forEach((status, statusIndex) => {
+                    status.classList.add('d-none');
+                    statusValue[statusIndex].classList.remove('d-none');
                 })
                 refreshAttendance();
                 btn.classList.add('d-none');
                 btnEdit[index].classList.remove('d-none');
+                btnSaveAttendance[index].classList.add('d-none');
             })
         })
         btnSaveAttendance.forEach((btn, index) => {
             btn.addEventListener('click', () => {
                 const data = [];
-                const sundayIdx = document.querySelectorAll(`.sundayIdx${index}`);
-                sundayIdx.forEach((sunday, sundayIndex) => {
-                    // console.log(sunday.value)
-                    const [userID, service, date, attendanceStatusValue] = sunday.value.split('|');
-                    data.push({ userID, service, date, status: attendanceStatusValue });
-                    sunday.setAttribute('disabled', 'true');
-                })
+                const selectStatus = document.querySelectorAll(`.selectStatus${index}`);
+                const statusValue = document.querySelectorAll(`.statusValue${index}`);
 
-                console.log(data)
+                selectStatus.forEach((status, statusIndex) => {
+                    status.classList.add('d-none');
+                    statusValue[statusIndex].classList.remove('d-none');
+
+                    const [userID, service, date] = status.getAttribute('user-data').split('|');
+                    data.push({ userID, service, date, status: status.value });
+                })
 
                 Axios.post('http://localhost:5000/api/insertAttendance', data)
                     .then((response) => {
@@ -210,27 +217,14 @@ function ViewAttendance() {
                     }).catch((error) => {
                         console.error(error);
                     });
-                btn.setAttribute('disabled', 'true');
+
+                refreshAttendance();
                 btnEdit[index].classList.remove('d-none');
                 btnCancelAttendance[index].classList.add('d-none');
+                btnSaveAttendance[index].classList.add('d-none');
             })
         })
     }
-
-    const toggleAttendance = (userIdx, sundayIdx) => {
-        setAttendance(prev => {
-            const updated = [...prev];
-            const current = updated[userIdx].records[sundayIdx];
-
-            let nextStatus;
-            if (current === "Visitor") nextStatus = 'Absent';
-            else if (current === 'Absent') nextStatus = 'Present';
-            else nextStatus = "Visitor";
-
-            updated[userIdx].records[sundayIdx] = nextStatus;
-            return updated;
-        });
-    };
 
     const sundayColumns = sundays.map((date, idx) => {
         const label = `${idx + 1}${idx === 0 ? 'st' : idx === 1 ? 'nd' : idx === 2 ? 'rd' : 'th'}`;
@@ -258,7 +252,7 @@ function ViewAttendance() {
                         <button type='button' className='btnCancelAttendance badge btn btn-danger btn-sm d-none'>
                             Cancel
                         </button>
-                        <button type='button' className='btnSaveAttendance badge btn btn-success btn-sm' disabled>
+                        <button type='button' className='btnSaveAttendance badge btn btn-success btn-sm d-none'>
                             Save
                         </button>
                     </div>
@@ -292,11 +286,11 @@ function ViewAttendance() {
                             <p className='m-0'>Easily check your attendance records here.</p>
                         </div>
                         <div className="card-body">
-                            <div className='flex-end flex-wrap gap-2 mb-3'>
+                            <div className='center flex-wrap gap-2 mb-3'>
                                 <div>
                                     <div className="input-group center">
                                         <button type="button" className="btn btn-success btnAddChurch" data-bs-toggle="modal" data-bs-target="#addChurchgoerModal">
-                                            Add
+                                            Register
                                         </button>
                                         <button type="button" className="btn btn-secondary refreshAttendance d-none">
                                             Refresh
@@ -369,42 +363,25 @@ function ViewAttendance() {
                                                     <td>{user.id}</td>
                                                     <td className="text-start center ps-3 " style={{ minWidth: '260px' }}>
                                                         <span className='me-auto'>{user.name}</span>
-                                                        <button className='btn btn-secondary badge btnEditChurchgoer' type="button" onClick={() => handleEditChurchgoer(user.id)} data-bs-toggle="modal" data-bs-target="#addChurchgoerModal">Edit</button>
+                                                        <button className='btn btn-secondary badge btnEditChurchgoer' type="button" onClick={() => handleEditChurchgoer(user.id)} data-bs-toggle="modal" data-bs-target="#addChurchgoerModal">Edit Info</button>
                                                     </td>
 
                                                     {sundays.map((date, sundayIdx) => (
                                                         <td key={sundayIdx}>
-                                                            <div className='gap-3' style={{ minWidth: '120px' }}>
-                                                                <input
-                                                                    type="checkbox" disabled
-                                                                    className={`form-check-input border m-0 attendanceStatus sundayIdx${sundayIdx} 
-                                                                        ${user.records[sundayIdx] === 'Present'
-                                                                            ? 'bg-success border-success'
-                                                                            : user.records[sundayIdx] === 'Absent'
-                                                                                ? 'border-danger'
-                                                                                : 'border-secondary'}`}
-                                                                    style={{ padding: '10px' }}
-                                                                    id={`attendance-${userIdx}${sundayIdx}`}
-                                                                    checked={user.records[sundayIdx] === 'Present'}
-                                                                    onChange={() => toggleAttendance(userIdx, sundayIdx)}
-                                                                    value={`${user.id}|${sundayIdx + 1}|${date.toLocaleDateString('en-CA').replace(/-/g, '/')}|${user.records[sundayIdx] === 'Visitor'
-                                                                        ? 'Visitor' // leave label empty until clicked
-                                                                        : user.records[sundayIdx]}`}
-                                                                />
+                                                            <div style={{ minWidth: '120px' }}>
 
-                                                                <label htmlFor={`attendance-${userIdx}${sundayIdx}`}
-                                                                    className={`ms-2 ${user.records[sundayIdx] === 'Present'
-                                                                        ? 'text-success'
-                                                                        : user.records[sundayIdx] === 'Visitor'
-                                                                            ? 'text-secondary'
-                                                                            : 'text-danger'
-                                                                        }`}>
-                                                                    {user.records[sundayIdx] === 'Visitor'
-                                                                        ? 'Visitor' // leave label empty until clicked
-                                                                        : user.records[sundayIdx]}
-                                                                </label>
+                                                                <select user-data={`${user.id}|${sundayIdx + 1}|${date.toLocaleDateString('en-CA').replace(/-/g, '/')}`} className={`form-select form-select-sm d-none selectStatus${sundayIdx}`}>
+                                                                    <option defaultValue="Visitor">Visitor</option>
+                                                                    <option value="Present">Present</option>
+                                                                    <option value="Absent">Absent</option>
+                                                                    <option value="Excuse">Excuse</option>
+                                                                </select>
 
-
+                                                                <h6 className={`rounded text-light py-1 m-0 statusValue${sundayIdx}
+                                                                    ${user.records[sundayIdx] === 'Present' ? 'bg-success' :
+                                                                        user.records[sundayIdx] === 'Absent' ? 'bg-danger' :
+                                                                            user.records[sundayIdx] === 'Excuse' ? 'bg-warning text-dark' : 'bg-secondary'}`} >
+                                                                    {user.records[sundayIdx]}</h6>
                                                             </div>
                                                         </td>
                                                     ))}

@@ -22,11 +22,11 @@ function Header() {
             }
         };
 
+
         // Initial check
         handleResize();
 
         window.addEventListener('resize', handleResize);
-
         return () => {
             window.removeEventListener('resize', handleResize);
         };
@@ -39,9 +39,11 @@ function Header() {
         if (sidebar.classList.contains('sidebarClose')) {
             sidebar.classList.remove('sidebarClose');
             sidebar.classList.add('sidebarOpen');
+            localStorage.setItem('sidebarStatus', 'open');
         } else {
             sidebar.classList.remove('sidebarOpen');
             sidebar.classList.add('sidebarClose');
+            localStorage.setItem('sidebarStatus', 'close');
         }
     };
     return (
