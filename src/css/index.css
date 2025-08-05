@@ -35,6 +35,11 @@ body {
     justify-content: flex-end;
 }
 
+.flex-between {
+    display: flex;
+    justify-content: space-between;
+}
+
 .flex {
     display: flex;
     gap: 10px;

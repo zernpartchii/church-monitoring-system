@@ -3,8 +3,8 @@ import Sidebar from '../components/Sidebar'
 import Header from '../components/Header'
 import ChurchgoerModal from './ChurchgoerModal';
 import Axios from 'axios';
-import Swal from 'sweetalert2';
-
+import { formatByName, sortAttendanceBy } from './SortAndFilter';
+import editAttendance from './EditAttendance';
 const getDaysInMonthByType = (year, month, type = 'Sundays') => {
     const dates = [];
     const date = new Date(year, month, 1);
@@ -37,36 +37,6 @@ function ViewAttendance() {
     const [searchTerm, setSearchTerm] = useState('');
     const [viewMode, setViewMode] = useState('Sundays');
 
-    const sortAttendanceByName = () => {
-        const newOrder = sortOrder === 'desc' ? 'asc' : 'desc';
-        const sorted = [...attendance].sort((a, b) => {
-            const nameA = a.name.toLowerCase();
-            const nameB = b.name.toLowerCase();
-
-            if (nameA < nameB) return newOrder === 'desc' ? -1 : 1;
-            if (nameA > nameB) return newOrder === 'desc' ? 1 : -1;
-            return 0;
-        });
-
-        setSortOrder(newOrder);
-        setAttendance(sorted);
-    };
-
-    const sortAttendanceByDate = () => {
-        const newOrder = sortOrder === 'desc' ? 'asc' : 'desc';
-        const sorted = [...attendance].sort((a, b) => {
-            const dateA = a.dateCreated.toLowerCase();
-            const dateB = b.dateCreated.toLowerCase();
-
-            if (dateA < dateB) return newOrder === 'desc' ? -1 : 1;
-            if (dateA > dateB) return newOrder === 'desc' ? 1 : -1;
-            return 0;
-        });
-
-        setSortOrder(newOrder);
-        setAttendance(sorted);
-    };
-
     const refreshAttendance = () => {
         const sundaysInMonth = getDaysInMonthByType(year, month, viewMode);
         setSundays(sundaysInMonth); // ← Add this
@@ -77,7 +47,6 @@ function ViewAttendance() {
             .then(([churchgoersRes, attendanceRes]) => {
                 const churchgoers = churchgoersRes.data;
                 const attendances = attendanceRes.data;
-
                 //get attendance
                 const attendanceMap = new Map();
                 attendances.forEach(att => {
@@ -96,7 +65,9 @@ function ViewAttendance() {
 
                     return {
                         id: person.id,
-                        name: `${person.lastName}, ${person.firstName} ${person.middleName || ''}`.trim(),
+                        fullName: `${person.firstName} ${person.middleName || ''} ${person.lastName}`.trim(),
+                        formalName: `${person.lastName}, ${person.firstName} ${person.middleName || ''}`.trim(),
+                        dob: person.dateOfBirth,
                         records: personAttendance,
                         dateCreated: person.dateCreated
                     };
@@ -104,10 +75,18 @@ function ViewAttendance() {
 
                 // Sort by name DESCENDING
                 mapped.sort((a, b) => {
+<<<<<<< Updated upstream
                     const nameA = a.dateCreated.toLowerCase();
                     const nameB = b.dateCreated.toLowerCase();
                     if (nameA > nameB) return -1;
                     if (nameA < nameB) return 1;
+=======
+                    const dateA = a.dateCreated.toLowerCase();
+                    const dateB = b.dateCreated.toLowerCase();
+
+                    if (dateA > dateB) return -1;
+                    if (dateA < dateB) return 1;
+>>>>>>> Stashed changes
                     return 0;
                 });
 
@@ -156,6 +135,7 @@ function ViewAttendance() {
         refreshAttendance();
     }, [year, month, viewMode]);
 
+<<<<<<< Updated upstream
 
     const editAttendance = () => {
         const btnEdit = document.querySelectorAll('.btnEditAttendance');
@@ -225,6 +205,8 @@ function ViewAttendance() {
             })
         })
     }
+=======
+>>>>>>> Stashed changes
 
     const sundayColumns = sundays.map((date, idx) => {
         const label = `${idx + 1}${idx === 0 ? 'st' : idx === 1 ? 'nd' : idx === 2 ? 'rd' : 'th'}`;
@@ -287,6 +269,9 @@ function ViewAttendance() {
                         </div>
                         <div className="card-body">
                             <div className='center flex-wrap gap-2 mb-3'>
+                                <button type="button" className="btn btn-danger btnExportPDF">
+                                    Export
+                                </button>
                                 <div>
                                     <div className="input-group center">
                                         <button type="button" className="btn btn-success btnAddChurch" data-bs-toggle="modal" data-bs-target="#addChurchgoerModal">
@@ -339,9 +324,15 @@ function ViewAttendance() {
                                         <tr>
                                             <th>UserID</th>
                                             <th style={{ cursor: 'pointer' }} >
-                                                <div className='d-flex px-2'>
-                                                    <span className='me-auto' onClick={sortAttendanceByName}>FullName {sortOrder === 'asc' ? '↑' : '↓'}</span>
-                                                    <span className="material-symbols-outlined btnFilter" onClick={sortAttendanceByDate}>
+                                                <div className='d-flex gap-3'>
+                                                    <span className='me-auto' onClick={() =>
+                                                        sortAttendanceBy('fullName', sortOrder, attendance, setSortOrder, setAttendance)}>
+                                                        FullName {sortOrder === 'asc' ? '↑' : '↓'}</span>
+                                                    <span className="material-symbols-outlined" onClick={formatByName}>
+                                                        multiple_stop
+                                                    </span>
+                                                    <span className="material-symbols-outlined btnFilter" onClick={() =>
+                                                        sortAttendanceBy('dateCreated', sortOrder, attendance, setSortOrder, setAttendance)}>
                                                         date_range
                                                     </span>
                                                 </div>
@@ -349,21 +340,50 @@ function ViewAttendance() {
                                             {sundayColumns.map(col => col.header)}
                                         </tr>
                                         <tr>
+<<<<<<< Updated upstream
                                             <th></th>
                                             <th></th>
                                             {sundayColumns.map(col => col.control)}
+=======
+                                            <th>
+                                                <small>
+                                                    <span>Total: {attendance.length}</span>
+                                                </small>
+                                            </th>
+                                            <th>
+                                                <small className='center'>
+                                                    No Birthdate:
+                                                    <span className={`material-symbols-outlined text-danger fs-5`}>
+                                                        question_mark
+                                                    </span>
+                                                </small>
+                                            </th>
+                                            {attendanceTableColumn.map(col => col.control)}
+>>>>>>> Stashed changes
                                         </tr>
                                     </thead>
                                     <tbody className='align-middle'>
                                         {attendance.length > 0 ? (
                                             attendance.filter(user =>
-                                                user.name.toLowerCase().includes(searchTerm.trim().toLowerCase())
+                                                user.fullName.toLowerCase().includes(searchTerm.trim().toLowerCase())
                                             ).map((user, userIdx) => (
                                                 <tr key={userIdx}>
                                                     <td>{user.id}</td>
+<<<<<<< Updated upstream
                                                     <td className="text-start center ps-3 " style={{ minWidth: '260px' }}>
                                                         <span className='me-auto'>{user.name}</span>
                                                         <button className='btn btn-secondary badge btnEditChurchgoer' type="button" onClick={() => handleEditChurchgoer(user.id)} data-bs-toggle="modal" data-bs-target="#addChurchgoerModal">Edit Info</button>
+=======
+                                                    <td className="text-start center" style={{ minWidth: '260px' }}>
+                                                        <span className='me-auto text-capitalize fullName'>{user.fullName}</span>
+                                                        <span className='me-auto text-capitalize formalName d-none'>{user.formalName}</span>
+                                                        <span className={`material-symbols-outlined fs-5 me-2 ${user.dob === null ? 'text-danger' : 'd-none'}`}>
+                                                            question_mark
+                                                        </span>
+                                                        <button className='btn btn-secondary badge btnEditChurchgoer' type="button"
+                                                            onClick={() => handleEditChurchgoer(user.id)} data-bs-toggle="modal"
+                                                            data-bs-target="#addChurchgoerModal">More...</button>
+>>>>>>> Stashed changes
                                                     </td>
 
                                                     {sundays.map((date, sundayIdx) => (
