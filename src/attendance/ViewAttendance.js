@@ -73,6 +73,7 @@ const ViewAttendance = () => {
                         id: person.id,
                         formalName: `${person.lastName}, ${person.firstName} ${person.middleName || ''}`.trim(),
                         fullName: `${person.firstName} ${person.middleName || ''} ${person.lastName}`.trim(),
+                        dob: person.dateOfBirth,
                         records: personAttendance,
                         dateCreated: person.dateCreated
                     };
@@ -305,14 +306,20 @@ const ViewAttendance = () => {
                                         </tr>
                                         <tr>
                                             <th></th>
-                                            <th className='text-end'>
-                                                <span className=''>Total: {attendance.length}</span>
+                                            <th className='flex-between'>
+                                                <small >Registered: {attendance.length}</small>
+                                                <small className='center'>No Birthdate:
+                                                    <span class="material-symbols-outlined fs-5 text-danger">
+                                                        question_mark
+                                                    </span>
+                                                </small>
                                             </th>
                                             {attendanceTableColumn.map(col => col.control)}
                                         </tr>
                                     </thead>
                                     <tbody className='align-middle'>
                                         {attendance.length > 0 ? (
+                                            /* Search Funtionality */
                                             attendance.filter(user =>
                                                 user.fullName.toLowerCase().includes(searchTerm.trim().toLowerCase())
                                             ).map((user, userIdx) => (
@@ -321,6 +328,13 @@ const ViewAttendance = () => {
                                                     <td className="text-start center" style={{ minWidth: '260px' }}>
                                                         <span className='me-auto text-capitalize fullName'>{user.fullName}</span>
                                                         <span className='me-auto text-capitalize formalName d-none'>{user.formalName}</span>
+
+                                                        {/* Show when no birthdate */}
+                                                        <span class={`material-symbols-outlined fs-5 text-danger me-3 ${user.dob ? 'd-none' : ''}`}>
+                                                            question_mark
+                                                        </span>
+
+                                                        {/* More Buttons */}
                                                         <button className='btn btn-secondary badge btnEditChurchgoer' type="button"
                                                             onClick={() => handleEditChurchgoer(user.id)} data-bs-toggle="modal"
                                                             data-bs-target="#addChurchgoerModal">More...</button>
