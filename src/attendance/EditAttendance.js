@@ -56,8 +56,10 @@ export const editAttendance = () => {
                 status.classList.add('d-none');
                 statusValue[statusIndex].classList.remove('d-none');
 
-                const [userID, service, date] = status.getAttribute('user-data').split('|');
-                data.push({ userID, service, date, status: status.value });
+                if (status.value !== "--") {
+                    const [userID, service, date] = status.getAttribute('user-data').split('|');
+                    data.push({ userID, service, date, status: status.value });
+                }
             })
 
             Axios.post('http://localhost:5000/api/insertAttendance', data)
