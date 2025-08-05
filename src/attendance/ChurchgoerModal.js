@@ -76,13 +76,8 @@ const ChurchgoerModal = ({ userData }) => {
                         firstName: formData.firstName,
                         lastName: formData.lastName
                     });
-<<<<<<< Updated upstream
-=======
-
                     handleResetForms();
->>>>>>> Stashed changes
                 })
-                handleResetForms();
             })
             .catch((error) => {
                 console.log(error);

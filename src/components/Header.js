@@ -23,6 +23,11 @@ function Header() {
         };
 
 
+        const token = localStorage.getItem('cmsUserToken');
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const churchName = document.querySelector('.topbarTitle');
+        churchName.textContent = payload.churchName;
+
         // Initial check
         handleResize();
 
@@ -56,7 +61,7 @@ function Header() {
                     <div className='userTopLogo'>
                         <img src="../../cca.png" className="churchLogoMobile" />
                     </div>
-                    <p className="text-center fs-5 m-0 topbarTitle">CCA New Corella</p>
+                    <p className="text-center fs-5 m-0 topbarTitle"></p>
                 </div>
             </div>
             <hr className='m-0' />

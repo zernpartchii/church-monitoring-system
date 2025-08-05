@@ -8,13 +8,11 @@ export const UserView = () => {
         userNav.forEach((nav) => {
             nav.classList.add('d-none');
         });
-        topbarTitle.textContent = 'Admin';
         adminNav.classList.remove('d-none');
     } else {
         userNav.forEach((nav) => {
             nav.classList.remove('d-none');
         });
         adminNav.classList.add('d-none');
-        topbarTitle.textContent = 'User';
     }
 }

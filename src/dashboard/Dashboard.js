@@ -1,10 +1,6 @@
 import React, { useContext, useEffect } from 'react'
 import Sidebar from '../components/Sidebar'
 import Header from '../components/Header'
-<<<<<<< Updated upstream
-import { AuthContext } from '../auth/AuthContext'; // adjust path
-function Dashboard() {
-=======
 import GetChurchgoer, { countGroupsByAgeAndGender } from './GetChurchgoer'
 import Axios from 'axios'
 const Dashboard = () => {
@@ -25,9 +21,6 @@ const Dashboard = () => {
                 document.querySelector('.seniorTitle').textContent = people.Senior.Male + people.Senior.Female;
             })
     }, []);
->>>>>>> Stashed changes
-
-    const { user, login, logout } = useContext(AuthContext);
 
     return (
         <div className="d-flex vh-100">
@@ -37,10 +30,6 @@ const Dashboard = () => {
                 <GetChurchgoer />
                 <div className='p-3'>
                     <h3 className="text-start">Dashboard</h3>
-<<<<<<< Updated upstream
-                    <h1>Test Auth Context</h1>
-                    <p>User: {user ? JSON.stringify(user) : 'Not logged in'}</p>
-=======
                     <div className='d-flex flex-wrap gap-3'>
                         <div className="card text-white border-0 flex-fill bg-danger" style={{ minWidth: "15rem", maxWidth: "50rem" }}>
                             <div className="card-body flex-between">
@@ -98,7 +87,6 @@ const Dashboard = () => {
                             </div>
                         </div>
                     </div>
->>>>>>> Stashed changes
                 </div>
             </div>
         </div>
