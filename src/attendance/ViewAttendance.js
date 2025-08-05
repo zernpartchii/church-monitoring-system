@@ -84,7 +84,6 @@ const ViewAttendance = () => {
                     const dateA = a.dateCreated.toLowerCase();
                     const dateB = b.dateCreated.toLowerCase();
 
-                    console.log(dateA, dateB);
                     if (dateA > dateB) return -1;
                     if (dateA < dateB) return 1;
                     return 0;
@@ -234,29 +233,30 @@ const ViewAttendance = () => {
                         </div>
                         <div className="card-body">
                             <div className='center flex-wrap gap-2 mb-3'>
+                                <button type="button" className="btn btn-secondary btnAddChurch" data-bs-toggle="modal" data-bs-target="#addChurchgoerModal">
+                                    Register
+                                </button>
                                 <button type="button" className="btn btn-danger btnExport">
                                     Export
                                 </button>
-                                <div>
-                                    <div className="input-group center">
-                                        <button type="button" className="btn btn-success btnAddChurch" data-bs-toggle="modal" data-bs-target="#addChurchgoerModal">
-                                            Register
-                                        </button>
-                                        <button type="button" className="btn btn-secondary refreshAttendance d-none">
-                                            Refresh
-                                        </button>
-                                        {/* Search Funtionality */}
-                                        <input
-                                            type="text"
-                                            className="form-control searchChurchgoer"
-                                            placeholder="Search name here..."
-                                            value={searchTerm}
-                                            onChange={e => setSearchTerm(e.target.value)}
-                                            style={{ maxWidth: '340px' }}
-                                        />
+                                <div className="flex-wrap center gap-2 ms-auto">
+                                    <div>
+                                        <div className="input-group">
+                                            <span className="input-group-text material-symbols-outlined">search</span>
+                                            <button type="button" className="btn btn-secondary refreshAttendance d-none">
+                                                Refresh
+                                            </button>
+                                            {/* Search Funtionality */}
+                                            <input
+                                                type="search"
+                                                className="form-control searchChurchgoer"
+                                                placeholder="Search name here..."
+                                                value={searchTerm}
+                                                onChange={e => setSearchTerm(e.target.value)}
+                                                style={{ maxWidth: '340px' }}
+                                            />
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="d-flex flex-wrap center gap-2">
                                     <div className="d-flex gap-2">
                                         <select
                                             className="form-select"
@@ -309,7 +309,7 @@ const ViewAttendance = () => {
                                             <th className='flex-between'>
                                                 <small >Registered: {attendance.length}</small>
                                                 <small className='center'>No Birthdate:
-                                                    <span class="material-symbols-outlined fs-5 text-danger">
+                                                    <span className="material-symbols-outlined fs-5 text-danger">
                                                         question_mark
                                                     </span>
                                                 </small>
@@ -330,7 +330,7 @@ const ViewAttendance = () => {
                                                         <span className='me-auto text-capitalize formalName d-none'>{user.formalName}</span>
 
                                                         {/* Show when no birthdate */}
-                                                        <span class={`material-symbols-outlined fs-5 text-danger me-3 ${user.dob ? 'd-none' : ''}`}>
+                                                        <span className={`material-symbols-outlined fs-5 text-danger me-3 ${user.dob ? 'd-none' : ''}`}>
                                                             question_mark
                                                         </span>
 
