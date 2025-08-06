@@ -21,7 +21,7 @@ class AccountModel {
     static checkUsername(username, password, callback) {
         console.log(username)
         db.query(
-            `SELECT u.id, c.churchID, c.churchName, u.userID, u.role, u.username, u.password, cg.email, cg.firstName, cg.lastName 
+            `SELECT u.id, c.churchID, c.churchName, c.churchAddress, u.userID, u.role, u.username, u.password, cg.email, cg.firstName, cg.lastName
             FROM users u 
             INNER JOIN churchgoer cg ON u.userID = cg.id 
             INNER JOIN church c ON c.churchID = u.churchID 
@@ -59,6 +59,7 @@ class AccountModel {
                 const userToken = {
                     churchID: user.churchID,
                     churchName: user.churchName,
+                    churchAddress: user.churchAddress,
                     userID: user.userID,
                     role: user.role,
                     firstName: user.firstName,

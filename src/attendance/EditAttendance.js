@@ -52,6 +52,17 @@ export const editAttendance = () => {
             const statusValue = document.querySelectorAll(`.statusValue${index}`);
             const statusBadge = document.querySelector(`.statusBadge${index}`);
 
+            Swal.fire({
+                title: 'Please wait...',
+                icon: 'info',
+                allowEscapeKey: false,
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            })
+
             selectStatus.forEach((status, statusIndex) => {
                 status.classList.add('d-none');
                 statusValue[statusIndex].classList.remove('d-none');
@@ -65,18 +76,22 @@ export const editAttendance = () => {
             Axios.post('http://localhost:5000/api/insertAttendance', data)
                 .then((response) => {
                     console.log(response.data);
+
                     Swal.fire({
                         position: "center",
                         icon: "success",
                         title: "Successfully Updated!",
                         text: "Attendance has been updated successfully.",
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            document.querySelector('.refreshAttendance').click();
+                            statusBadge.classList.remove('d-none');
+                            btnEdit[index].classList.remove('d-none');
+                            btnCancelAttendance[index].classList.add('d-none');
+                            btnSaveAttendance[index].classList.add('d-none');
+                        }
                     });
 
-                    statusBadge.classList.remove('d-none');
-                    btnEdit[index].classList.remove('d-none');
-                    btnCancelAttendance[index].classList.add('d-none');
-                    btnSaveAttendance[index].classList.add('d-none');
-                    document.querySelector('.refreshAttendance').click();
                 }).catch((error) => {
                     console.error(error);
                 });

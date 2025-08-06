@@ -169,7 +169,7 @@ const Dashboard = () => {
                             </div>
                         </div>
                     </div>
-                    <div className='card p-3 mt-3' style={{ maxWidth: "50rem" }}>
+                    <div className='card p-3 mt-3' style={{ maxWidth: "75.8rem" }}>
                         <div className='center input-group'>
                             <select style={{ maxWidth: '8rem' }} className='form-select' value={selectedMonth} onChange={(e) => setSelectedMonth(Number(e.target.value))}>
                                 {monthOptions.map((m, i) => (

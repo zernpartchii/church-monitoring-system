@@ -5,6 +5,8 @@ import ChurchgoerModal from './ChurchgoerModal';
 import Axios from 'axios';
 import { formatByName, sortAttendanceBy } from './SortAndFilter';
 import editAttendance from './EditAttendance';
+import { exportAttendanceToPDF } from './ExportAttendance';
+import Swal from 'sweetalert2';
 
 const getDaysInMonthByType = (year, month, type = 'Sundays') => {
     const dates = [];
@@ -30,19 +32,20 @@ const ViewAttendance = () => {
     const [month, setMonth] = useState(today.getMonth());  // dynamically use current month
     const [year, setYear] = useState(today.getFullYear()); // dynamically use current yearx)
     const [sundays, setSundays] = useState([]);
-    const [sortOrder, setSortOrder] = useState('asc');
+    const [sortOrder, setSortOrder] = useState('desc');
     const [churchgoers, setChurchgoers] = useState([]);
     const [userData, setUserData] = useState([]);
     const [attendance, setAttendance] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [viewMode, setViewMode] = useState('Sundays');
+    const [printTheme, setPrintTheme] = useState('grid');
+
+    const token = localStorage.getItem('cmsUserToken');
+    const payload = JSON.parse(atob(token.split('.')[1]));
 
     const refreshAttendance = () => {
         const sundaysInMonth = getDaysInMonthByType(year, month, viewMode);
-        setSundays(sundaysInMonth); // ← Add this
-
-        const token = localStorage.getItem('cmsUserToken');
-        const payload = JSON.parse(atob(token.split('.')[1]));
+        setSundays(sundaysInMonth); // ← Add this 
         Promise.all([
             Axios.post('http://localhost:5000/api/churchgoers', { churchID: payload.churchID }),
             Axios.get('http://localhost:5000/api/attendances')
@@ -87,7 +90,6 @@ const ViewAttendance = () => {
                     if (dateA < dateB) return 1;
                     return 0;
                 });
-
                 setAttendance(mapped);
                 setChurchgoers(churchgoers);
             })
@@ -114,13 +116,13 @@ const ViewAttendance = () => {
     }
 
     useEffect(() => {
-        const refresh = document.querySelector('.refreshAttendance');
-        refresh.addEventListener('click', () => {
-            refreshAttendance();
-            document.querySelector('.searchChurchgoer').value = '';
-            setSearchTerm('');
-        });
-        refresh.click();
+        // const refresh = document.querySelector('.refreshAttendance');
+        // refresh.addEventListener('click', () => {
+        refreshAttendance();
+        document.querySelector('.searchChurchgoer').value = '';
+        setSearchTerm('');
+        // });
+        // refresh.click();
     }, []);
 
     useEffect(() => {
@@ -140,7 +142,7 @@ const ViewAttendance = () => {
         const formatDate = (date) => {
             const d = new Date(date);
             const day = d.getDate(); // No need to pad
-            const month = d.toLocaleString('default', { month: 'long' }); // "July", "August", etc.
+            const month = d.toLocaleString('default', { month: 'short' }); // "July", "August", etc.
             return `${month} ${day} `;
         };
 
@@ -215,6 +217,70 @@ const ViewAttendance = () => {
         })
     }
 
+    const sortName = () => {
+        const btnFormatName = document.querySelector('.btnFormatName');
+        if (btnFormatName.textContent === 'compare_arrows') {
+            sortAttendanceBy("fullName", sortOrder, attendance, setSortOrder, setAttendance);
+        } else {
+            sortAttendanceBy("formalName", sortOrder, attendance, setSortOrder, setAttendance);
+        }
+    }
+
+    const exportAttendance = () => {
+        const data = {
+            theme: printTheme,
+            type: viewMode,
+            churchLogo: '/cca.png',
+            churchName: payload.churchName,
+            churchAddress: payload.churchAddress,
+            reportTitle: ` Attendance - ${new Date(year, month).toLocaleString('default', { month: 'long' })} ${year}`,
+            subText: 'Report Date: ' + new Date().toLocaleString('default', { month: 'long', day: '2-digit', year: 'numeric' }),
+        }
+
+        Swal.fire({
+            text: 'Do you want to export Attendance to PDF?',
+            icon: 'question',
+            showDenyButton: true,
+            confirmButtonText: 'Yes',
+            denyButtonText: `No, cancel`,
+            showLoaderOnConfirm: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Exporting Attendance...',
+                    icon: 'info',
+                    timer: 2000,
+                    allowEscapeKey: false,
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                })
+                exportAttendanceToPDF(data);
+            }
+        })
+
+
+    }
+
+    const handleRefresh = () => {
+
+        attendanceCheck();
+        refreshAttendance();
+        Swal.fire({
+            title: 'Please wait...',
+            icon: 'info',
+            timer: 2000,
+            allowEscapeKey: false,
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        })
+    }
+
     return (
         <div className="d-flex vh-100">
             <Sidebar />
@@ -231,16 +297,23 @@ const ViewAttendance = () => {
                                 <button type="button" className="btn btn-secondary btnAddChurch" data-bs-toggle="modal" data-bs-target="#addChurchgoerModal">
                                     Register
                                 </button>
-                                <button type="button" className="btn btn-danger btnExport">
-                                    Export
-                                </button>
+                                <div className='input-group' style={{ maxWidth: '165px' }}>
+                                    <button type="button" className="btn btn-danger btnExport" onClick={exportAttendance}>
+                                        Export
+                                    </button>
+                                    <select className='form-select' value={printTheme} onChange={(e) => setPrintTheme(e.target.value)}>
+                                        <option value="grid">Grid</option>
+                                        <option value="striped">Stripe</option>
+                                        <option value="plain">Plain</option>
+                                    </select>
+                                </div>
                                 <div className="flex-wrap center gap-2 ms-auto">
+                                    <button type="button" className="btn btn-secondary refreshAttendance" onClick={handleRefresh}>
+                                        Refresh
+                                    </button>
                                     <div>
                                         <div className="input-group">
                                             <span className="input-group-text material-symbols-outlined searchIcon">search</span>
-                                            <button type="button" className="btn btn-secondary refreshAttendance d-none">
-                                                Refresh
-                                            </button>
                                             {/* Search Funtionality */}
                                             <input
                                                 type="search"
@@ -285,14 +358,13 @@ const ViewAttendance = () => {
                                             <th>UserID</th>
                                             <th style={{ cursor: 'pointer' }} >
                                                 <div className='d-flex gap-3'>
-                                                    <span className='me-auto' onClick={() => sortAttendanceBy(
-                                                        "fullName", sortOrder, attendance, setSortOrder, setAttendance)}>
-                                                        FullName {sortOrder === 'asc' ? '↑' : '↓'}</span>
-                                                    <span className="material-symbols-outlined" onClick={formatByName}>
-                                                        multiple_stop
+                                                    <span className='me-auto sortName' onClick={sortName}>
+                                                        FullName {sortOrder === 'desc' ? '↑' : '↓'}</span>
+                                                    <span className="material-symbols-outlined btnFormatName" onClick={formatByName}>
+                                                        compare_arrows
                                                     </span>
                                                     <span className="material-symbols-outlined btnFilter" onClick={() => sortAttendanceBy(
-                                                        "formalName", sortOrder, attendance, setSortOrder, setAttendance)}>
+                                                        "dateCreated", sortOrder, attendance, setSortOrder, setAttendance)}>
                                                         date_range
                                                     </span>
                                                 </div>
@@ -321,8 +393,8 @@ const ViewAttendance = () => {
                                                 <tr key={userIdx}>
                                                     <td>{user.id}</td>
                                                     <td className="text-start center" style={{ minWidth: '260px' }}>
-                                                        <span className='me-auto text-capitalize fullName'>{user.fullName}</span>
-                                                        <span className='me-auto text-capitalize formalName d-none'>{user.formalName}</span>
+                                                        <span className='me-auto text-capitalize formatName fullName'>{user.fullName}</span>
+                                                        <span className='me-auto text-capitalize formatName formalName d-none'>{user.formalName}</span>
 
                                                         {/* Show when no birthdate */}
                                                         <span className={`material-symbols-outlined fs-5 text-danger me-3 ${user.dob ? 'd-none' : ''}`}>
