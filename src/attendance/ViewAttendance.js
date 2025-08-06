@@ -43,7 +43,6 @@ const ViewAttendance = () => {
 
         const token = localStorage.getItem('cmsUserToken');
         const payload = JSON.parse(atob(token.split('.')[1]));
-
         Promise.all([
             Axios.post('http://localhost:5000/api/churchgoers', { churchID: payload.churchID }),
             Axios.get('http://localhost:5000/api/attendances')
@@ -223,13 +222,9 @@ const ViewAttendance = () => {
                 <Header />
                 <ChurchgoerModal userData={userData} />
                 <div className='p-3'>
-                    <h3 className="text-start">Attendance</h3>
-                    <div className="card rounded-3 mt-3">
-                        <div className="card-header">
-                            <h4>
-                                Church Attendance - {new Date(year, month).toLocaleString('default', { month: 'long' })} {year}
-                            </h4>
-                            <p className='m-0'>Easily check your attendance records here.</p>
+                    <div className="card rounded-3">
+                        <div className="card-header center flex-column py-4">
+                            <h4 className='attendanceTitle'>Attendance - {new Date(year, month).toLocaleString('default', { month: 'long' })} {year}  </h4>
                         </div>
                         <div className="card-body">
                             <div className='center flex-wrap gap-2 mb-3'>
@@ -242,7 +237,7 @@ const ViewAttendance = () => {
                                 <div className="flex-wrap center gap-2 ms-auto">
                                     <div>
                                         <div className="input-group">
-                                            <span className="input-group-text material-symbols-outlined">search</span>
+                                            <span className="input-group-text material-symbols-outlined searchIcon">search</span>
                                             <button type="button" className="btn btn-secondary refreshAttendance d-none">
                                                 Refresh
                                             </button>
@@ -257,16 +252,16 @@ const ViewAttendance = () => {
                                             />
                                         </div>
                                     </div>
-                                    <div className="d-flex gap-2">
+                                    <div className="d-flex flex-wrap center gap-2">
                                         <select
                                             className="form-select"
-                                            value={viewMode}
+                                            value={viewMode} style={{ maxWidth: '124px' }}
                                             onChange={(e) => setViewMode(e.target.value)}
                                         >
                                             <option value="Sundays">Sundays</option>
                                             <option value="Weekdays">Weekdays</option>
                                         </select>
-                                        <select className="form-select" style={{ width: '150px' }} value={month}
+                                        <select className="form-select" style={{ width: '140px' }} value={month}
                                             onChange={e => setMonth(Number(e.target.value))}>
                                             {Array.from({ length: 12 }, (_, i) => (
                                                 <option key={i} value={i}>{new Date(0, i).toLocaleString('default', { month: 'long' })}</option>

@@ -1,8 +1,8 @@
 import React, { useContext, useEffect } from 'react'
 import Sidebar from '../components/Sidebar'
 import Header from '../components/Header'
-import { countGroupsByAgeAndGender } from './GetChurchgoer'
 import Axios from 'axios'
+import { countGroupsByAgeAndGender } from './GetChurchgoer'
 import { generateChart } from './DashboardChart'
 import { useState, useRef } from 'react'
 const Dashboard = () => {
@@ -32,7 +32,7 @@ const Dashboard = () => {
     }, []);
 
     useEffect(() => {
-        generateChart(chartRef, data, selectedMonth, selectedYear);
+        generateChart(chartRef, data, selectedMonth, selectedYear,);
     }, [data, selectedMonth, selectedYear]);
 
     const countMembers = (churchID) => {
@@ -169,7 +169,7 @@ const Dashboard = () => {
                             </div>
                         </div>
                     </div>
-                    <div className='card p-3 mt-3 overflow-auto' style={{ maxWidth: "100%", height: "40vh" }}>
+                    <div className='card p-3 mt-3' style={{ maxWidth: "50rem" }}>
                         <div className='center input-group'>
                             <select style={{ maxWidth: '8rem' }} className='form-select' value={selectedMonth} onChange={(e) => setSelectedMonth(Number(e.target.value))}>
                                 {monthOptions.map((m, i) => (
@@ -177,12 +177,17 @@ const Dashboard = () => {
                                 ))}
                             </select>
                             <select style={{ maxWidth: '6rem' }} className='form-select' value={selectedYear} onChange={(e) => setSelectedYear(Number(e.target.value))}>
-                                {years.map((y, i) => (
-                                    <option key={i} value={y}>{y}</option>
-                                ))}
+                                {years.length === 0 ? <option>Year</option> :
+                                    years.map((y, i) => (
+                                        <option key={i} value={y}>{y}</option>
+                                    ))
+                                }
                             </select>
                         </div>
-                        <canvas ref={chartRef} id="attendanceChart" className='overflow-auto' style={{ minWidth: "550px", height: "550px" }}></canvas>
+                        {/* <h5 className='text-center mt-3 m-0'>Attendance Summary</h5> */}
+                        <div className='center' style={{ height: "35vh" }}>
+                            <canvas ref={chartRef} id="attendanceChart"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>

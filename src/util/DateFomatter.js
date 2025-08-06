@@ -26,7 +26,7 @@ export const formatDateForInput = (isoDateString) => {
 
 export const formatDateShort = (dateStr) => {
     const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', {
+    return date.toLocaleDateString('en-CA', {
         month: 'long', // "Jan", "Feb", ...
         day: '2-digit'  // "01", "02", ..., "31"
     });
