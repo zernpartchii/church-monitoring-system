@@ -1,19 +1,20 @@
 import React from 'react'
 import Axios from 'axios';
 import Swal from 'sweetalert2';
-export const CreateUserAccount = (data) => {
+
+const url = 'http://localhost:5000/api'; // Adjust the URL as needed
+
+export const CreatePastorAccount = (data) => {
 
     const accounts = {
         churchID: data.churchID,
         password: data.password
     }
-
     // remove the churchID, userID, username, password, and cpassword from the data
     data.churchID && delete data.churchID;
     data.password && delete data.password;
     data.cpassword && delete data.cpassword;
 
-    const url = 'http://localhost:5000/api'; // Adjust the URL as needed
     Axios.post(`${url}/insertChurchGoer`, data)
         .then((response) => {
             const username = generateUsername(data.firstName + " " + data.lastName);
@@ -24,7 +25,6 @@ export const CreateUserAccount = (data) => {
 
             // merge the two objects
             data = { ...data, ...accounts };
-
             Axios.post(`${url}/createAccount`, data)
                 .then((response) => {
                     Swal.fire({
@@ -49,6 +49,52 @@ export const CreateUserAccount = (data) => {
 
 }
 
+export const generateUsersAccount = (data) => {
+
+    const username = generateUsername(data.firstName + " " + data.lastName);
+    const password = generatePassword(data.firstName, data.lastName);
+
+    data.username = username;
+    data.password = password;
+    data.role = "user";
+
+    // delete the first and last name from the data
+    delete data.firstName;
+    delete data.lastName;
+
+    Axios.post(`${url}/createAccount`, data)
+        .then((response) => {
+            Swal.fire({
+                icon: 'info',
+                title: `Username: <strong>${username}</strong> <br> Password: <strong>${password}</strong>`,
+                text: 'Account successfully created.',
+                html: `You can use your username and password to login to your account.`,
+                allowOutsideClick: false,
+            })
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+}
+
+export const generatePassword = (firstName, lastName) => {
+    if (!firstName || !lastName) return '';
+
+    const symbols = '!@#$%^&*';
+    const randomNumber = Math.floor(10 + Math.random() * 90); // 2-digit number
+    const randomSymbol = symbols[Math.floor(Math.random() * symbols.length)];
+
+    // Remove spaces from names
+    const cleanFirst = firstName.replace(/\s+/g, '');
+    const cleanLast = lastName.replace(/\s+/g, '');
+
+    // Capitalize
+    const capFirst = cleanFirst.charAt(0).toUpperCase() + cleanFirst.slice(1).toLowerCase();
+    const capLast = cleanLast.charAt(0).toUpperCase() + cleanLast.slice(1).toLowerCase();
+
+    return `${capFirst}${capLast}${randomNumber}${randomSymbol}`;
+}
+
 export const generateUsername = (fullName) => {
     const nameParts = fullName.trim().toLowerCase().split(" ");
     let username = "";
@@ -68,4 +114,4 @@ export const generateUsername = (fullName) => {
     return username + randomNum;
 };
 
-export default CreateUserAccount;
+export default CreatePastorAccount;

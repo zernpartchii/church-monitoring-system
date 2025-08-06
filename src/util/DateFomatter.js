@@ -23,3 +23,12 @@ export const formatDateForInput = (isoDateString) => {
     // Sample Output: "2023-08-01"
     return `${year}-${month}-${day}`; // Matches <input type="date"> format
 };
+
+export const formatDateShort = (dateStr) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', {
+        month: 'long', // "Jan", "Feb", ...
+        day: '2-digit'  // "01", "02", ..., "31"
+    });
+}
+

@@ -3,21 +3,8 @@ import Sidebar from '../components/Sidebar'
 import Header from '../components/Header'
 import ChurchgoerModal from './ChurchgoerModal';
 import Axios from 'axios';
-import Swal from 'sweetalert2';
-
-const getSundaysInMonth = (year, month) => {
-    const sundays = [];
-    const date = new Date(year, month, 1);
-
-    while (date.getMonth() === month) {
-        if (date.getDay() === 0) {
-            sundays.push(new Date(date));
-        }
-        date.setDate(date.getDate() + 1);
-    }
-
-    return sundays;
-};
+import { formatByName, sortAttendanceBy } from './SortAndFilter';
+import editAttendance from './EditAttendance';
 
 const getDaysInMonthByType = (year, month, type = 'Sundays') => {
     const dates = [];
@@ -37,8 +24,7 @@ const getDaysInMonthByType = (year, month, type = 'Sundays') => {
     return dates;
 };
 
-
-function ViewAttendance() {
+const ViewAttendance = () => {
     // 
     const today = new Date();
     const [month, setMonth] = useState(today.getMonth());  // dynamically use current month
@@ -51,41 +37,15 @@ function ViewAttendance() {
     const [searchTerm, setSearchTerm] = useState('');
     const [viewMode, setViewMode] = useState('Sundays');
 
-    const sortAttendanceByName = () => {
-        const newOrder = sortOrder === 'desc' ? 'asc' : 'desc';
-        const sorted = [...attendance].sort((a, b) => {
-            const nameA = a.name.toLowerCase();
-            const nameB = b.name.toLowerCase();
-
-            if (nameA < nameB) return newOrder === 'desc' ? -1 : 1;
-            if (nameA > nameB) return newOrder === 'desc' ? 1 : -1;
-            return 0;
-        });
-
-        setSortOrder(newOrder);
-        setAttendance(sorted);
-    };
-
-    const sortAttendanceByDate = () => {
-        const newOrder = sortOrder === 'desc' ? 'asc' : 'desc';
-        const sorted = [...attendance].sort((a, b) => {
-            const dateA = a.dateCreated.toLowerCase();
-            const dateB = b.dateCreated.toLowerCase();
-
-            if (dateA < dateB) return newOrder === 'desc' ? -1 : 1;
-            if (dateA > dateB) return newOrder === 'desc' ? 1 : -1;
-            return 0;
-        });
-
-        setSortOrder(newOrder);
-        setAttendance(sorted);
-    };
-
     const refreshAttendance = () => {
         const sundaysInMonth = getDaysInMonthByType(year, month, viewMode);
         setSundays(sundaysInMonth); // ← Add this
+
+        const token = localStorage.getItem('cmsUserToken');
+        const payload = JSON.parse(atob(token.split('.')[1]));
+
         Promise.all([
-            Axios.get('http://localhost:5000/api/churchgoers'),
+            Axios.post('http://localhost:5000/api/churchgoers', { churchID: payload.churchID }),
             Axios.get('http://localhost:5000/api/attendances')
         ])
             .then(([churchgoersRes, attendanceRes]) => {
@@ -105,12 +65,15 @@ function ViewAttendance() {
                     const personAttendance = sundaysInMonth.map((sunday) => {
                         const dateKey = new Date(sunday).toLocaleDateString('en-CA'); // 'YYYY-MM-DD' in local time
                         const key = `${person.id}-${dateKey}`;
-                        return attendanceMap.get(key) || "Visitor";
+
+                        return attendanceMap.get(key) || "--";
                     });
 
                     return {
                         id: person.id,
-                        name: `${person.lastName}, ${person.firstName} ${person.middleName || ''}`.trim(),
+                        formalName: `${person.lastName}, ${person.firstName} ${person.middleName || ''}`.trim(),
+                        fullName: `${person.firstName} ${person.middleName || ''} ${person.lastName}`.trim(),
+                        dob: person.dateOfBirth,
                         records: personAttendance,
                         dateCreated: person.dateCreated
                     };
@@ -118,10 +81,11 @@ function ViewAttendance() {
 
                 // Sort by name DESCENDING
                 mapped.sort((a, b) => {
-                    const nameA = a.dateCreated.toLowerCase();
-                    const nameB = b.dateCreated.toLowerCase();
-                    if (nameA > nameB) return -1;
-                    if (nameA < nameB) return 1;
+                    const dateA = a.dateCreated.toLowerCase();
+                    const dateB = b.dateCreated.toLowerCase();
+
+                    if (dateA > dateB) return -1;
+                    if (dateA < dateB) return 1;
                     return 0;
                 });
 
@@ -142,7 +106,7 @@ function ViewAttendance() {
                 if (user.records.length !== sundaysInMonth.length) {
                     return {
                         ...user,
-                        records: sundaysInMonth.map(() => 'Visitor'),
+                        records: sundaysInMonth.map(() => '--'),
                     };
                 }
                 return user;
@@ -154,7 +118,6 @@ function ViewAttendance() {
         const refresh = document.querySelector('.refreshAttendance');
         refresh.addEventListener('click', () => {
             refreshAttendance();
-
             document.querySelector('.searchChurchgoer').value = '';
             setSearchTerm('');
         });
@@ -163,90 +126,16 @@ function ViewAttendance() {
 
     useEffect(() => {
         editAttendance();
+        countAttendanceStatus();
     }, [attendance])
 
+    // refresh attendance
     useEffect(() => {
         attendanceCheck();
         refreshAttendance();
     }, [year, month, viewMode]);
 
-
-    const editAttendance = () => {
-        const btnEdit = document.querySelectorAll('.btnEditAttendance');
-        const btnCancelAttendance = document.querySelectorAll('.btnCancelAttendance');
-        const btnSaveAttendance = document.querySelectorAll('.btnSaveAttendance');
-        btnEdit.forEach((btn, index) => {
-            btn.addEventListener('click', () => {
-                const sundayIdx = document.querySelectorAll(`.sundayIdx${index}`);
-                sundayIdx.forEach((sunday, sundayIndex) => {
-                    // console.log(sunday.value)
-                    sunday.removeAttribute('disabled');
-                })
-                btnSaveAttendance[index].removeAttribute('disabled');
-                btnCancelAttendance[index].classList.remove('d-none');
-                btnEdit[index].classList.add('d-none');
-            })
-        })
-        btnCancelAttendance.forEach((btn, index) => {
-            btn.addEventListener('click', () => {
-                const sundayIdx = document.querySelectorAll(`.sundayIdx${index}`);
-                sundayIdx.forEach((sunday, sundayIndex) => {
-                    // console.log(sunday.value)
-                    sunday.setAttribute('disabled', 'true');
-                })
-                refreshAttendance();
-                btn.classList.add('d-none');
-                btnEdit[index].classList.remove('d-none');
-            })
-        })
-        btnSaveAttendance.forEach((btn, index) => {
-            btn.addEventListener('click', () => {
-                const data = [];
-                const sundayIdx = document.querySelectorAll(`.sundayIdx${index}`);
-                sundayIdx.forEach((sunday, sundayIndex) => {
-                    // console.log(sunday.value)
-                    const [userID, service, date, attendanceStatusValue] = sunday.value.split('|');
-                    data.push({ userID, service, date, status: attendanceStatusValue });
-                    sunday.setAttribute('disabled', 'true');
-                })
-
-                console.log(data)
-
-                Axios.post('http://localhost:5000/api/insertAttendance', data)
-                    .then((response) => {
-                        console.log(response.data);
-                        Swal.fire({
-                            position: "center",
-                            icon: "success",
-                            title: "Successfully Updated!",
-                            text: "Attendance has been updated successfully.",
-                        });
-                    }).catch((error) => {
-                        console.error(error);
-                    });
-                btn.setAttribute('disabled', 'true');
-                btnEdit[index].classList.remove('d-none');
-                btnCancelAttendance[index].classList.add('d-none');
-            })
-        })
-    }
-
-    const toggleAttendance = (userIdx, sundayIdx) => {
-        setAttendance(prev => {
-            const updated = [...prev];
-            const current = updated[userIdx].records[sundayIdx];
-
-            let nextStatus;
-            if (current === "Visitor") nextStatus = 'Absent';
-            else if (current === 'Absent') nextStatus = 'Present';
-            else nextStatus = "Visitor";
-
-            updated[userIdx].records[sundayIdx] = nextStatus;
-            return updated;
-        });
-    };
-
-    const sundayColumns = sundays.map((date, idx) => {
+    const attendanceTableColumn = sundays.map((date, idx) => {
         const label = `${idx + 1}${idx === 0 ? 'st' : idx === 1 ? 'nd' : idx === 2 ? 'rd' : 'th'}`;
         const viewModes = viewMode === 'Sundays' ? label + ' Sunday' : 'Day';
         const formatDate = (date) => {
@@ -255,6 +144,7 @@ function ViewAttendance() {
             const month = d.toLocaleString('default', { month: 'long' }); // "July", "August", etc.
             return `${month} ${day} `;
         };
+
         return {
             key: idx,
             header: (
@@ -266,13 +156,19 @@ function ViewAttendance() {
             control: (
                 <td key={`control-${idx}`}>
                     <div className={`center gap-1 ${attendance.length > 0 ? 'd-flex' : 'd-none'}`}>
+                        <div className={`d-flex gap-1 statusBadge${idx}`}>
+                            <button type='button' className={`badgePresent${idx} badge btn btn-success btn-sm`}>0</button>
+                            <button type='button' className={`badgeAbsent${idx} badge btn btn-danger btn-sm`}>0</button>
+                            <button type='button' className={`badgeVisitor${idx} badge btn btn-secondary btn-sm`}>0</button>
+                            <button type='button' className={`badgeExcuse${idx} badge btn btn-warning text-dark btn-sm`}>0</button>
+                        </div>
                         <button type='button' className='btnEditAttendance badge btn btn-secondary btn-sm'>
                             Edit
                         </button>
                         <button type='button' className='btnCancelAttendance badge btn btn-danger btn-sm d-none'>
                             Cancel
                         </button>
-                        <button type='button' className='btnSaveAttendance badge btn btn-success btn-sm' disabled>
+                        <button type='button' className='btnSaveAttendance badge btn btn-success btn-sm d-none'>
                             Save
                         </button>
                     </div>
@@ -290,6 +186,36 @@ function ViewAttendance() {
         })
     }
 
+    const countAttendanceStatus = () => {
+        sundays.forEach((date, idx) => {
+            const statusValue = document.querySelectorAll(`.statusValue${idx}`);
+            let present = 0;
+            let absent = 0;
+            let visitor = 0;
+            let excuse = 0;
+            statusValue.forEach((status) => {
+                switch (status.textContent) {
+                    case 'Present':
+                        present++;
+                        break;
+                    case 'Absent':
+                        absent++;
+                        break;
+                    case 'Visitor':
+                        visitor++;
+                        break;
+                    case 'Excuse':
+                        excuse++;
+                        break;
+                }
+            })
+            document.querySelector(`.badgePresent${idx}`).textContent = "P" + present;
+            document.querySelector(`.badgeAbsent${idx}`).textContent = "A" + absent;
+            document.querySelector(`.badgeVisitor${idx}`).textContent = "V" + visitor;
+            document.querySelector(`.badgeExcuse${idx}`).textContent = "E" + excuse;
+        })
+    }
+
     return (
         <div className="d-flex vh-100">
             <Sidebar />
@@ -300,15 +226,37 @@ function ViewAttendance() {
                     <h3 className="text-start">Attendance</h3>
                     <div className="card rounded-3 mt-3">
                         <div className="card-header">
-                            <h5>View Attendance</h5>
-                            <p>Easily check your attendance records here.</p>
-                        </div>
-                        <div className="card-body p-3">
-                            <h4 className="text-center mb-3">
+                            <h4>
                                 Church Attendance - {new Date(year, month).toLocaleString('default', { month: 'long' })} {year}
                             </h4>
-                            <div className='flex-wrap center gap-2 mb-3'>
-                                <div className="d-flex flex-wrap center gap-2">
+                            <p className='m-0'>Easily check your attendance records here.</p>
+                        </div>
+                        <div className="card-body">
+                            <div className='center flex-wrap gap-2 mb-3'>
+                                <button type="button" className="btn btn-secondary btnAddChurch" data-bs-toggle="modal" data-bs-target="#addChurchgoerModal">
+                                    Register
+                                </button>
+                                <button type="button" className="btn btn-danger btnExport">
+                                    Export
+                                </button>
+                                <div className="flex-wrap center gap-2 ms-auto">
+                                    <div>
+                                        <div className="input-group">
+                                            <span className="input-group-text material-symbols-outlined">search</span>
+                                            <button type="button" className="btn btn-secondary refreshAttendance d-none">
+                                                Refresh
+                                            </button>
+                                            {/* Search Funtionality */}
+                                            <input
+                                                type="search"
+                                                className="form-control searchChurchgoer"
+                                                placeholder="Search name here..."
+                                                value={searchTerm}
+                                                onChange={e => setSearchTerm(e.target.value)}
+                                                style={{ maxWidth: '340px' }}
+                                            />
+                                        </div>
+                                    </div>
                                     <div className="d-flex gap-2">
                                         <select
                                             className="form-select"
@@ -333,23 +281,6 @@ function ViewAttendance() {
                                         />
                                     </div>
                                 </div>
-                                <div className="input-group center">
-                                    <button type="button" className="btn btn-success btnAddChurch" data-bs-toggle="modal" data-bs-target="#addChurchgoerModal">
-                                        Add
-                                    </button>
-                                    <button type="button" className="btn btn-secondary refreshAttendance d-none">
-                                        Refresh
-                                    </button>
-                                    {/* Search Funtionality */}
-                                    <input
-                                        type="text"
-                                        className="form-control searchChurchgoer"
-                                        placeholder="Search name here..."
-                                        value={searchTerm}
-                                        onChange={e => setSearchTerm(e.target.value)}
-                                        style={{ maxWidth: '340px' }}
-                                    />
-                                </div>
                             </div>
 
                             <div className="table-responsive">
@@ -358,66 +289,77 @@ function ViewAttendance() {
                                         <tr>
                                             <th>UserID</th>
                                             <th style={{ cursor: 'pointer' }} >
-                                                <div className='d-flex px-2'>
-                                                    <span className='me-auto' onClick={sortAttendanceByName}>FullName {sortOrder === 'asc' ? '↑' : '↓'}</span>
-                                                    <span className="material-symbols-outlined btnFilter" onClick={sortAttendanceByDate}>
+                                                <div className='d-flex gap-3'>
+                                                    <span className='me-auto' onClick={() => sortAttendanceBy(
+                                                        "fullName", sortOrder, attendance, setSortOrder, setAttendance)}>
+                                                        FullName {sortOrder === 'asc' ? '↑' : '↓'}</span>
+                                                    <span className="material-symbols-outlined" onClick={formatByName}>
+                                                        multiple_stop
+                                                    </span>
+                                                    <span className="material-symbols-outlined btnFilter" onClick={() => sortAttendanceBy(
+                                                        "formalName", sortOrder, attendance, setSortOrder, setAttendance)}>
                                                         date_range
                                                     </span>
                                                 </div>
                                             </th>
-                                            {sundayColumns.map(col => col.header)}
+                                            {attendanceTableColumn.map(col => col.header)}
                                         </tr>
                                         <tr>
                                             <th></th>
-                                            <th></th>
-                                            {sundayColumns.map(col => col.control)}
+                                            <th className='flex-between'>
+                                                <small >Registered: {attendance.length}</small>
+                                                <small className='center'>No Birthdate:
+                                                    <span className="material-symbols-outlined fs-5 text-danger">
+                                                        question_mark
+                                                    </span>
+                                                </small>
+                                            </th>
+                                            {attendanceTableColumn.map(col => col.control)}
                                         </tr>
                                     </thead>
                                     <tbody className='align-middle'>
                                         {attendance.length > 0 ? (
+                                            /* Search Funtionality */
                                             attendance.filter(user =>
-                                                user.name.toLowerCase().includes(searchTerm.trim().toLowerCase())
+                                                user.fullName.toLowerCase().includes(searchTerm.trim().toLowerCase())
                                             ).map((user, userIdx) => (
                                                 <tr key={userIdx}>
                                                     <td>{user.id}</td>
-                                                    <td className="text-start center ps-3 " style={{ minWidth: '260px' }}>
-                                                        <span className='me-auto'>{user.name}</span>
-                                                        <button className='btn btn-secondary badge btnEditChurchgoer' type="button" onClick={() => handleEditChurchgoer(user.id)} data-bs-toggle="modal" data-bs-target="#addChurchgoerModal">Edit</button>
-                                                    </td>
+                                                    <td className="text-start center" style={{ minWidth: '260px' }}>
+                                                        <span className='me-auto text-capitalize fullName'>{user.fullName}</span>
+                                                        <span className='me-auto text-capitalize formalName d-none'>{user.formalName}</span>
 
+                                                        {/* Show when no birthdate */}
+                                                        <span className={`material-symbols-outlined fs-5 text-danger me-3 ${user.dob ? 'd-none' : ''}`}>
+                                                            question_mark
+                                                        </span>
+
+                                                        {/* More Buttons */}
+                                                        <button className='btn btn-secondary badge btnEditChurchgoer' type="button"
+                                                            onClick={() => handleEditChurchgoer(user.id)} data-bs-toggle="modal"
+                                                            data-bs-target="#addChurchgoerModal">More...</button>
+                                                    </td>
                                                     {sundays.map((date, sundayIdx) => (
                                                         <td key={sundayIdx}>
-                                                            <div className='gap-3' style={{ minWidth: '120px' }}>
-                                                                <input
-                                                                    type="checkbox" disabled
-                                                                    className={`form-check-input border m-0 attendanceStatus sundayIdx${sundayIdx} 
-                                                                        ${user.records[sundayIdx] === 'Present'
-                                                                            ? 'bg-success border-success'
-                                                                            : user.records[sundayIdx] === 'Absent'
-                                                                                ? 'border-danger'
-                                                                                : 'border-secondary'}`}
-                                                                    style={{ padding: '10px' }}
-                                                                    id={`attendance-${userIdx}${sundayIdx}`}
-                                                                    checked={user.records[sundayIdx] === 'Present'}
-                                                                    onChange={() => toggleAttendance(userIdx, sundayIdx)}
-                                                                    value={`${user.id}|${sundayIdx + 1}|${date.toLocaleDateString('en-CA').replace(/-/g, '/')}|${user.records[sundayIdx] === 'Visitor'
-                                                                        ? 'Visitor' // leave label empty until clicked
-                                                                        : user.records[sundayIdx]}`}
-                                                                />
+                                                            <div style={{ minWidth: '120px' }}>
 
-                                                                <label htmlFor={`attendance-${userIdx}${sundayIdx}`}
-                                                                    className={`ms-2 ${user.records[sundayIdx] === 'Present'
-                                                                        ? 'text-success'
-                                                                        : user.records[sundayIdx] === 'Visitor'
-                                                                            ? 'text-secondary'
-                                                                            : 'text-danger'
-                                                                        }`}>
-                                                                    {user.records[sundayIdx] === 'Visitor'
-                                                                        ? 'Visitor' // leave label empty until clicked
-                                                                        : user.records[sundayIdx]}
-                                                                </label>
+                                                                {/* Show when edit button is clicked */}
+                                                                <select user-data={`${user.id}|${sundayIdx + 1}|${date.toLocaleDateString('en-CA').replace(/-/g, '/')}`}
+                                                                    className={`form-select form-select-sm d-none selectStatus${sundayIdx}`}>
+                                                                    <option value="--" disabled>Select</option>
+                                                                    <option value="Visitor">Visitor</option>
+                                                                    <option value="Present">Present</option>
+                                                                    <option value="Absent">Absent</option>
+                                                                    <option value="Excuse">Excuse</option>
+                                                                </select>
 
-
+                                                                {/* Show Current Status */}
+                                                                <p className={`rounded m-0 statusValue${sundayIdx}
+                                                                    ${user.records[sundayIdx] === 'Present' ? `text-success` :
+                                                                        user.records[sundayIdx] === 'Absent' ? 'text-danger' :
+                                                                            user.records[sundayIdx] === 'Excuse' ? 'text-warning' :
+                                                                                user.records[sundayIdx] === 'Visitor' ? 'text-secondary' : ''}`} >
+                                                                    {user.records[sundayIdx]}</p>
                                                             </div>
                                                         </td>
                                                     ))}
@@ -425,7 +367,7 @@ function ViewAttendance() {
                                             ))
                                         ) : (
                                             <tr>
-                                                <td colSpan={sundayColumns.length + 2}>No churchgoers found.</td>
+                                                <td colSpan={attendanceTableColumn.length + 2}>No churchgoers found.</td>
                                             </tr>
                                         )}
                                     </tbody>

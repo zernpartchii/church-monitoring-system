@@ -9,7 +9,8 @@ exports.checkChurchGoer = (req, res) => {
 }
 
 exports.getAllChurchGoers = (req, res) => {
-    churchgoerModel.read((err, results) => {
+    const churchID = req.body.churchID;
+    churchgoerModel.read(churchID, (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
         res.status(200).json(results);
     });

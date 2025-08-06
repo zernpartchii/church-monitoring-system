@@ -4,6 +4,9 @@ const churchController = require('../controllers/churchController');
 const churchGoerController = require('../controllers/churchGoerController');
 const attendanceController = require('../controllers/attendanceController');
 const accountController = require('../controllers/accountController');
+const dashboard = require('../controllers/dashboardController');
+// Dashboard
+router.post('/getAttendanceByChurch', dashboard.getAttendanceByChurch);
 
 // Attendance
 router.get('/attendances', attendanceController.getAllAttendances);
@@ -15,7 +18,7 @@ router.post('/checkChurchName', churchController.checkChurchName);
 router.post('/insertChurch', churchController.insertChurch);
 
 // Church Goer
-router.get('/churchgoers', churchGoerController.getAllChurchGoers);
+router.post('/churchgoers', churchGoerController.getAllChurchGoers);
 router.post('/checkChurchGoer', churchGoerController.checkChurchGoer);
 router.post('/insertChurchGoer', churchGoerController.insertChurchGoer);
 router.put('/updateChurchGoer', churchGoerController.updateChurchGoer);

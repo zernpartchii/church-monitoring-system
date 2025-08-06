@@ -1,32 +1,37 @@
 import { React, useEffect } from 'react'
 
-function Header() {
-    useEffect(() => {
-        const handleResize = () => {
-            const sidebar = document.querySelector('.sidebar');
-            const screenWidth = window.innerWidth;
-            if (sidebar) {
-                if (screenWidth <= 500) {
-                    sidebar.classList.add('mobileNav', 'sidebarClose');
+const Header = () => {
+
+    const handleResize = () => {
+        const sidebar = document.querySelector('.sidebar');
+        const screenWidth = window.innerWidth;
+        if (sidebar) {
+            if (screenWidth <= 500) {
+                sidebar.classList.add('mobileNav', 'sidebarClose');
+            } else {
+                sidebar.classList.remove('mobileNav');
+                const sidebarStatus = localStorage.getItem('sidebarStatus');
+                if (sidebarStatus === 'close') {
+                    sidebar.classList.remove('sidebarOpen');
+                    sidebar.classList.add('sidebarClose');
                 } else {
-                    sidebar.classList.remove('mobileNav');
-                    const sidebarStatus = localStorage.getItem('sidebarStatus');
-                    if (sidebarStatus === 'close') {
-                        sidebar.classList.remove('sidebarOpen');
-                        sidebar.classList.add('sidebarClose');
-                    } else {
-                        sidebar.classList.add('sidebarOpen');
-                        sidebar.classList.remove('sidebarClose');
-                    }
+                    sidebar.classList.add('sidebarOpen');
+                    sidebar.classList.remove('sidebarClose');
                 }
             }
-        };
+        }
+    };
+
+    useEffect(() => {
+        const token = localStorage.getItem('cmsUserToken');
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const churchName = document.querySelector('.topbarTitle');
+        churchName.textContent = payload.churchName;
 
         // Initial check
         handleResize();
 
         window.addEventListener('resize', handleResize);
-
         return () => {
             window.removeEventListener('resize', handleResize);
         };
@@ -49,14 +54,14 @@ function Header() {
     return (
         <>
             <div className='p-2 sticky-top topbar'>
-                <div className='d-flex gap-3 align-items-center px-2'>
+                <div className='d-flex gap-2 align-items-center px-2'>
                     <span className="material-symbols-outlined cursor menu" onClick={handleMenuToggle}>
                         left_panel_close
                     </span>
                     <div className='userTopLogo'>
                         <img src="../../cca.png" className="churchLogoMobile" />
                     </div>
-                    <p className="text-center fs-5 m-0 topbarTitle">CCA New Corella</p>
+                    <p className="text-center fs-5 m-0 topbarTitle"></p>
                 </div>
             </div>
             <hr className='m-0' />

@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import Axios from 'axios';
 import Swal from 'sweetalert2';
 import { formatDateForInput, formatDateTime } from '../util/DateFomatter';
+import { generateUsersAccount } from '../accounts/CreateUserAccount';
 
 const ChurchgoerModal = ({ userData }) => {
 
@@ -30,12 +31,19 @@ const ChurchgoerModal = ({ userData }) => {
     useEffect(() => {
         if (userData) {
             setFormData(userData);
-            document.querySelector('.btnDeleteChurchgoer')?.classList.remove('d-none');
         }
-        document.querySelector('.btnAddChurchgoer')?.addEventListener('click', () => {
-            handleResetForms();
-            document.querySelector('.btnDeleteChurchgoer')?.classList.add('d-none');
-        });
+
+        // Show delete button
+        if (userData.length == undefined) {
+            document.querySelector('.btnDeleteChurchgoer').classList.remove('d-none');
+        }
+
+        const token = localStorage.getItem('cmsUserToken');
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        if (payload.firstName === userData.firstName && payload.lastName === userData.lastName) {
+            document.querySelector('.btnDeleteChurchgoer').classList.add('d-none');
+        }
+
     }, [userData]);
 
     const handleResetForms = () => {
@@ -43,8 +51,9 @@ const ChurchgoerModal = ({ userData }) => {
         setFormData(data);
 
         // Close the modal
-        document.querySelector('.btn-close')?.click();
+        document.querySelector('.btn-Close')?.click();
         document.querySelector('.refreshAttendance')?.click();
+        document.querySelector('.btnDeleteChurchgoer').classList.add('d-none');
     };
 
     const handleCreateUserData = () => {
@@ -56,8 +65,19 @@ const ChurchgoerModal = ({ userData }) => {
                     icon: "success",
                     title: "Successfully Added!",
                     text: `${formData.firstName} ${formData.lastName}'s record has been added successfully.`,
-                });
-                handleResetForms();
+                }).then(() => {
+                    // decoding base64 parts
+                    const token = localStorage.getItem('cmsUserToken');
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+
+                    generateUsersAccount({
+                        churchID: payload.churchID,
+                        userID: response.data.id,
+                        firstName: formData.firstName,
+                        lastName: formData.lastName
+                    });
+                    handleResetForms();
+                })
             })
             .catch((error) => {
                 console.log(error);
@@ -80,7 +100,7 @@ const ChurchgoerModal = ({ userData }) => {
         delete mergedFormData.dateCreated;
 
         // Update the `dateOfBirth and dateModified` field
-        mergedFormData.dateOfBirth = formatDateForInput(mergedFormData.dateOfBirth);
+        mergedFormData.dateOfBirth = formatDateForInput(mergedFormData.dateOfBirth) || null;
         mergedFormData.dateModified = formatDateTime(new Date());
 
         // Send the updated data
@@ -140,6 +160,7 @@ const ChurchgoerModal = ({ userData }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
         Axios.post(`${url}/checkChurchGoer`, formData)
             .then((response) => {
                 if (response.data.length > 0) {
@@ -187,7 +208,6 @@ const ChurchgoerModal = ({ userData }) => {
 
                     <div className="modal-header">
                         <h1 className="modal-title fs-5" id="addChurchgoerModalLabel">Churchgoer Information</h1>
-                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
                     <form onSubmit={handleSubmit}>
@@ -240,8 +260,8 @@ const ChurchgoerModal = ({ userData }) => {
                         </div>
 
                         <div className="modal-footer d-flex">
-                            <button type="button" className="btn btn-danger me-auto btnDeleteChurchgoer" onClick={handleDeleteUserData}>Delete</button>
-                            <button type="button" className="btn btn-secondary btn-Cancel" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" className="btn btn-danger me-auto btnDeleteChurchgoer d-none" onClick={handleDeleteUserData}>Delete</button>
+                            <button type="button" className="btn btn-secondary btn-Close" onClick={handleResetForms} data-bs-dismiss="modal">Close</button>
                             <button type="submit" className="btn btn-success">Save Changes</button>
                         </div>
                     </form>

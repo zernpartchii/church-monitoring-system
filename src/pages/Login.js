@@ -44,6 +44,10 @@ function Login() {
                     text: response.data.text,
                     allowOutsideClick: false, // optional: block clicks outside
                 })
+
+                // console.log(response.data.token);
+                localStorage.setItem('cmsUserToken', response.data.token);
+
                 if (response.data.icon === 'success') {
                     if (response.data.role === 'super admin') {
                         navigate('/cms/admin/dashboard');
