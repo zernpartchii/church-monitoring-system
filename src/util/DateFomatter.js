@@ -32,3 +32,15 @@ export const formatDateShort = (dateStr) => {
     });
 }
 
+export const formatTo12Hour = (timeStr) => {
+    const [hour, minute] = timeStr.split(':');
+    const date = new Date();
+    date.setHours(+hour);
+    date.setMinutes(+minute);
+
+    // Convert "17:00" to "5:00 PM"
+    return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true });
+}
+
+
+

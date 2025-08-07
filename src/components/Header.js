@@ -53,18 +53,20 @@ const Header = () => {
     };
     return (
         <>
-            <div className='p-2 sticky-top topbar'>
-                <div className='d-flex gap-2 align-items-center px-2'>
+            <div className='p-2 sticky-top topbar '>
+                <div className=' center gap-2 px-2 topNav my-2'>
                     <span className="material-symbols-outlined cursor menu" onClick={handleMenuToggle}>
                         left_panel_close
                     </span>
-                    <div className='userTopLogo'>
-                        <img src="../../cca.png" className="churchLogoMobile" />
+                    <div className="center gap-2 flex-wrap me-auto">
+                        <div className='userTopLogo'>
+                            <img src="../../cca.png" className="churchLogoMobile" />
+                        </div>
+                        <p className="text-center fs-5 m-0 topbarTitle"></p>
                     </div>
-                    <p className="text-center fs-5 m-0 topbarTitle"></p>
                 </div>
+                <hr className='m-0' />
             </div>
-            <hr className='m-0' />
         </>
     )
 }

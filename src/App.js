@@ -8,7 +8,7 @@ import AddChurch from './church/AddChurch';
 import Dashboard from './dashboard/Dashboard';
 import ViewAttendance from './attendance/ViewAttendance';
 import AccountInfo from './settings/AccountInfo';
-
+import Schedule from './schedule/Schedule';
 //Import Admin component
 import AdminDashboard from './admin/Dashboard';
 import ViewRequest from './admin/viewRequest/ViewRequest';
@@ -23,7 +23,9 @@ function App() {
         <Route path="/cms/add-church" element={<AddChurch />} />
         <Route path="/cms/dashboard" element={<Dashboard />} />
         <Route path="/cms/attendance" element={<ViewAttendance />} />
+        <Route path="/cms/schedule" element={<Schedule />} />
         <Route path="/cms/settings/account-info" element={<AccountInfo />} />
+
 
         {/* Admin Routes */}
         <Route path="/cms/admin/dashboard" element={<AdminDashboard />} />

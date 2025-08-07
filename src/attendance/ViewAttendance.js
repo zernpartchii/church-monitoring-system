@@ -298,7 +298,7 @@ const ViewAttendance = () => {
                                     Register
                                 </button>
                                 <div className='input-group' style={{ maxWidth: '165px' }}>
-                                    <button type="button" className="btn btn-danger btnExport" onClick={exportAttendance}>
+                                    <button type="button" className="btn btn-success btnExport" onClick={exportAttendance}>
                                         Export
                                     </button>
                                     <select className='form-select' value={printTheme} onChange={(e) => setPrintTheme(e.target.value)}>
@@ -308,12 +308,11 @@ const ViewAttendance = () => {
                                     </select>
                                 </div>
                                 <div className="flex-wrap center gap-2 ms-auto">
-                                    <button type="button" className="btn btn-secondary refreshAttendance" onClick={handleRefresh}>
-                                        Refresh
-                                    </button>
                                     <div>
                                         <div className="input-group">
-                                            <span className="input-group-text material-symbols-outlined searchIcon">search</span>
+                                            <button type="button" className="btn btn-success refreshAttendance" onClick={handleRefresh}>
+                                                Refresh
+                                            </button>
                                             {/* Search Funtionality */}
                                             <input
                                                 type="search"
@@ -323,6 +322,7 @@ const ViewAttendance = () => {
                                                 onChange={e => setSearchTerm(e.target.value)}
                                                 style={{ maxWidth: '340px' }}
                                             />
+                                            <span className="input-group-text material-symbols-outlined searchIcon">search</span>
                                         </div>
                                     </div>
                                     <div className="d-flex flex-wrap center gap-2">
