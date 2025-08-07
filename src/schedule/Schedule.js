@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 
@@ -6,12 +6,18 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
-import interactionPlugin from '@fullcalendar/interaction'; // required for dateClick 
+import interactionPlugin from '@fullcalendar/interaction'; // required for dateClick  
 import { Modal } from 'bootstrap';
 import { formatTo12Hour } from '../util/DateFomatter';
 import { getTimeRangeFromEvents } from '../schedule/GetTimeRange';
+import { CreateScheduleEvent, ReadScheduleEvent } from '../schedule/HandleData';
+import Swal from 'sweetalert2';
 
 const Schedule = () => {
+
+    const token = localStorage.getItem('cmsUserToken');
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const churchID = payload.churchID;
 
     const data = {
         eventName: '',
@@ -19,38 +25,45 @@ const Schedule = () => {
         eventHost: '',
         eventStart: '',
         eventEnd: '',
+        eventDescription: '',
     }
 
-    const event = [
-        {
-            title: 'Bible Study',
-            start: '2025-08-07T17:00:00',
-            end: '2025-08-07T18:00:00',
-            extendedProps: {
-                location: 'Purok 5',
-                host: 'Braga Family',
-            }
-        },
-        {
-            title: 'Bible Sharing',
-            start: '2025-08-03T11:00:00',
-            end: '2025-08-05T15:00:00',
-            extendedProps: {
-                location: 'Purok 8',
-                host: 'Pabuaya Family',
-            }
-        }
-    ];
-
-    const [scheldule, setSchedule] = useState(event);
+    const [event, setEvents] = useState([]);
+    const [schedule, setSchedule] = useState(event);
     const { slotMinTime, slotMaxTime } = getTimeRangeFromEvents(event);
 
     useEffect(() => {
-        // window.scrollTo(0, 0);
+        // Fixed Full Calendar
         document.querySelector('.fc-dayGridMonth-button').click();
+
+        // Add Schedule Button
         addButton();
 
+        // Read Schedule
+        ReadEvent();
     }, []);
+
+    // Read Schedule
+    const ReadEvent = async () => {
+        const data = await ReadScheduleEvent(churchID);
+        if (data.success === true) {
+            // Convert it to FullCalendar format
+            const event = data.result.map(item => ({
+                title: item.eventName,
+                start: item.eventStart,
+                end: item.eventEnd,
+                extendedProps: {
+                    location: item.eventLocation,
+                    host: item.eventHost,
+                    description: item.eventDescription
+                }
+            }));
+            // console.log(event);
+            setEvents(event);
+        } else {
+            console.log(data.error);
+        }
+    }
 
     // Add Schedule Button
     const addButton = () => {
@@ -68,8 +81,8 @@ const Schedule = () => {
     const handleDateClick = (info) => {
         setSchedule({
             ...data,
-            eventStart: new Date().toISOString().slice(0, 16), // ⬅️ ISO string for datetime-local
-            eventEnd: new Date().toISOString().slice(0, 16),
+            eventStart: new Date(info.dateStr).toISOString().slice(0, 16), // ⬅️ ISO string for datetime-local
+            eventEnd: new Date(info.dateStr).toISOString().slice(0, 16),
         });
         showModal();
     };
@@ -83,14 +96,15 @@ const Schedule = () => {
             eventHost: extendedProps.host,
             eventStart: new Date(start).toISOString().slice(0, 16), // ⬅️ ISO string for datetime-local
             eventEnd: new Date(end).toISOString().slice(0, 16),
+            eventDescription: extendedProps.description,
         })
         showModal();
     };
 
     // Set Value per field
     const handleOnChange = (e) => {
-        setSchedule({ ...scheldule, [e.target.id]: e.target.value });
-        console.log(scheldule)
+        setSchedule({ ...schedule, [e.target.id]: e.target.value });
+        // console.log(schedule)
     }
 
     // Clear forms
@@ -105,9 +119,25 @@ const Schedule = () => {
     }
 
     // Submit Data
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(scheldule);
+        schedule.churchID = churchID;
+        const result = await CreateScheduleEvent(schedule);
+        if (result) {
+            Swal.fire({
+                icon: "success",
+                title: "Successfully Added!",
+                text: "Schedule Event has been added successfully."
+            })
+            ReadEvent();
+            handleReset();
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "Error!",
+                text: "Something went wrong."
+            })
+        }
     }
 
     return (
@@ -143,40 +173,46 @@ const Schedule = () => {
                         data-bs-keyboard="false" tabIndex="-1" aria-labelledby="dayModalLabel" aria-hidden="true">
                         <div className="modal-dialog modal-dialog-centered">
                             <form onSubmit={handleSubmit} className="modal-content">
-                                <div className="modal-header">
+                                <div className="modal-header d-flex flex-between">
                                     <h1 className="modal-title fs-5" id="dayModalLabel">Schedule Event</h1>
+                                    <button type="button" className="btn btn-outline-danger px-3" data-bs-dismiss="modal">X</button>
                                 </div>
                                 <div className="modal-body d-flex flex-column gap-3">
                                     <div className='flex-fill'>
                                         <label>Schedule Event Name</label>
-                                        <input type='text' required value={scheldule.eventName || ''}
+                                        <input type='text' required value={schedule.eventName || ''}
                                             onChange={handleOnChange} className='form-control' id='eventName' />
                                     </div>
                                     <div className='flex-fill'>
                                         <label>Location</label>
-                                        <input type='text' required value={scheldule.eventLocation || ''}
+                                        <input type='text' required value={schedule.eventLocation || ''}
                                             onChange={handleOnChange} className='form-control' id='eventLocation' />
                                     </div>
                                     <div className='flex-fill'>
                                         <label>Host</label>
-                                        <input type='text' required value={scheldule.eventHost || ''}
+                                        <input type='text' required value={schedule.eventHost || ''}
                                             onChange={handleOnChange} className='form-control' id='eventHost' />
                                     </div>
                                     <div className='flex-fill'>
                                         <label>Date Time Start</label>
-                                        <input type='datetime-local' required value={scheldule.eventStart || ''}
+                                        <input type='datetime-local' required value={schedule.eventStart || ''}
                                             onChange={handleOnChange} className='form-control' id='eventStart' />
                                     </div>
                                     <div className='flex-fill'>
                                         <label>Date Time End</label>
-                                        <input type='datetime-local' required value={scheldule.eventEnd || ''}
+                                        <input type='datetime-local' required value={schedule.eventEnd || ''}
                                             onChange={handleOnChange} className='form-control' id='eventEnd' />
+                                    </div>
+                                    <div className='flex-fill'>
+                                        <label>Descripton (Optional)</label>
+                                        <textarea type='text' value={schedule.eventDescription || ''}
+                                            onChange={handleOnChange} className='form-control' id='eventDescription' />
                                     </div>
                                 </div>
                                 <div className="modal-footer d-flex">
-                                    <button type="button" className="btn btn-outline-danger me-auto" onClick={handleReset}>Delete</button>
-                                    <button type="button" className="btn btn-danger" onClick={handleReset}>Reset</button>
-                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" className="btn btn-danger me-auto" onClick={handleReset}>Delete</button>
+                                    <button type="button" className="btn btn-outline-secondary" onClick={handleReset}>Reset</button>
+                                    <button type="button" className="btn btn-secondary px-3" data-bs-dismiss="modal">Cancel</button>
                                     <button type="submit" className="btn btn-success">Save Schedule</button>
                                 </div>
                             </form>
