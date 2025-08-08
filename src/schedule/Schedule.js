@@ -1,23 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
-
+import Swal from 'sweetalert2';
+import Axios from 'axios';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction'; // required for dateClick  
-import { Modal } from 'bootstrap';
-import { formatTo12Hour } from '../util/DateFomatter';
-import { getTimeRangeFromEvents } from '../schedule/GetTimeRange';
-import { CreateScheduleEvent, ReadScheduleEvent } from '../schedule/HandleData';
-import Swal from 'sweetalert2';
+import { toPHDateTimeLocal } from '../util/DateFomatter';
+import { getTimeRangeFromEvents, AddSchedButton, showModal } from './Util';
+import { getUserToken } from '../accounts/GetUserToken';
 
 const Schedule = () => {
 
-    const token = localStorage.getItem('cmsUserToken');
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    const churchID = payload.churchID;
+    const url = 'http://localhost:5000/api';
+    const churchID = getUserToken().churchID;
+    const userID = getUserToken().userID;
 
     const data = {
         eventName: '',
@@ -33,51 +32,45 @@ const Schedule = () => {
     const { slotMinTime, slotMaxTime } = getTimeRangeFromEvents(event);
 
     useEffect(() => {
-        // Fixed Full Calendar
-        document.querySelector('.fc-dayGridMonth-button').click();
 
         // Add Schedule Button
-        addButton();
+        AddSchedButton();
+
+        // Fixed Full Calendar
+        document.querySelector('.fc-dayGridMonth-button').click();
+        const btnAddSchedule = document.querySelector('.btnAddSchedule');
+        btnAddSchedule.addEventListener('click', handleReset);
 
         // Read Schedule
-        ReadEvent();
+        ReadScheduleEvent();
     }, []);
 
     // Read Schedule
-    const ReadEvent = async () => {
-        const data = await ReadScheduleEvent(churchID);
-        if (data.success === true) {
-            // Convert it to FullCalendar format
-            const event = data.result.map(item => ({
-                title: item.eventName,
-                start: item.eventStart,
-                end: item.eventEnd,
-                extendedProps: {
-                    location: item.eventLocation,
-                    host: item.eventHost,
-                    description: item.eventDescription
-                }
-            }));
-            // console.log(event);
-            setEvents(event);
-        } else {
-            console.log(data.error);
-        }
+    const ReadScheduleEvent = () => {
+        Axios.get(`${url}/getScheduleEvent/${churchID}`)
+            .then((res) => {
+                // Convert it to FullCalendar format
+                const event = res.data.result.map(item => ({
+                    title: item.eventName,
+                    start: item.eventStart,
+                    end: item.eventEnd,
+                    extendedProps: {
+                        id: item.id,
+                        location: item.eventLocation,
+                        host: item.eventHost,
+                        description: item.eventDescription
+                    }
+                }));
+
+                // Set Event
+                setEvents(event);
+
+            }).catch((error) => {
+                console.log(error);
+            });
     }
 
-    // Add Schedule Button
-    const addButton = () => {
-        const buttonGroup = document.querySelectorAll('.fc-button-group');
-        const secondGroup = buttonGroup[0]; // 0 = first, 1 = second
-
-        const AddScheduleButton = `<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#dayModal">
-                            Add Schedule
-                        </button>`
-
-        secondGroup.insertAdjacentHTML('beforebegin', AddScheduleButton);
-    }
-
-    // Add Data
+    // Add New Schedule
     const handleDateClick = (info) => {
         setSchedule({
             ...data,
@@ -85,19 +78,22 @@ const Schedule = () => {
             eventEnd: new Date(info.dateStr).toISOString().slice(0, 16),
         });
         showModal();
+        document.querySelector('.btnDeleteSched').classList.add('d-none');
     };
 
-    // Edit Data
+    // Set Value per field 
     const handleEventClick = (info) => {
         const { title, start, end, extendedProps } = info.event;
         setSchedule({
+            eventID: extendedProps.id,
             eventName: title,
             eventLocation: extendedProps.location,
             eventHost: extendedProps.host,
-            eventStart: new Date(start).toISOString().slice(0, 16), // ⬅️ ISO string for datetime-local
-            eventEnd: new Date(end).toISOString().slice(0, 16),
+            eventStart: toPHDateTimeLocal(start),
+            eventEnd: toPHDateTimeLocal(end),
             eventDescription: extendedProps.description,
         })
+        document.querySelector('.btnDeleteSched').classList.remove('d-none');
         showModal();
     };
 
@@ -110,34 +106,67 @@ const Schedule = () => {
     // Clear forms
     const handleReset = () => {
         setSchedule(data);
+        ReadScheduleEvent();
+        document.querySelector('.btnDeleteSched').classList.add('d-none');
+        document.querySelector('.btnCloseSched').click();
     }
 
-    // Show Modal
-    const showModal = () => {
-        const modal = new Modal(document.getElementById('dayModal'));
-        modal.show();
-    }
-
-    // Submit Data
-    const handleSubmit = async (e) => {
+    // Create and Update Data
+    const handleSubmit = (e) => {
         e.preventDefault();
         schedule.churchID = churchID;
-        const result = await CreateScheduleEvent(schedule);
-        if (result) {
+        schedule.userID = userID;
+        if (schedule.eventID) {
+            // Update Schedule Event
+            Axios.put(`${url}/updateScheduleEvent`, schedule).then((res) => {
+                Swal.fire({
+                    icon: "success",
+                    title: res.data.message,
+                    text: "Schedule Event has been updated successfully."
+                })
+                handleReset();
+            }).catch((error) => {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error!",
+                    text: "Something went wrong."
+                })
+            });
+        } else {
+            // Create Schedule Event
+            Axios.post(`${url}/createScheduleEvent`, schedule).then((res) => {
+                Swal.fire({
+                    icon: "success",
+                    title: res.data.message,
+                    text: "Schedule Event has been added successfully."
+                })
+                handleReset();
+            }).catch((error) => {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error!",
+                    text: "Something went wrong."
+                })
+            });
+        }
+    }
+
+    // Delete Schedule Event
+    const handleDelete = () => {
+        Axios.delete(`${url}/deleteScheduleEvent/${schedule.eventID}`).then((res) => {
             Swal.fire({
                 icon: "success",
-                title: "Successfully Added!",
-                text: "Schedule Event has been added successfully."
+                title: res.data.message,
+                text: "Schedule Event has been deleted successfully."
             })
-            ReadEvent();
             handleReset();
-        } else {
+        }).catch((error) => {
             Swal.fire({
                 icon: "error",
                 title: "Error!",
                 text: "Something went wrong."
             })
-        }
+        });
     }
 
     return (
@@ -210,9 +239,9 @@ const Schedule = () => {
                                     </div>
                                 </div>
                                 <div className="modal-footer d-flex">
-                                    <button type="button" className="btn btn-danger me-auto" onClick={handleReset}>Delete</button>
-                                    <button type="button" className="btn btn-outline-secondary" onClick={handleReset}>Reset</button>
-                                    <button type="button" className="btn btn-secondary px-3" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="button" className="btn btn-danger me-auto btnDeleteSched d-none" onClick={handleDelete}>Delete</button>
+                                    <button type="button" className="btn btn-outline-secondary text-white" onClick={handleReset}>Reset</button>
+                                    <button type="button" className="btn btn-secondary px-3 btnCloseSched" data-bs-dismiss="modal">Cancel</button>
                                     <button type="submit" className="btn btn-success">Save Schedule</button>
                                 </div>
                             </form>

@@ -14,10 +14,10 @@ router.get('/attendances', attendanceController.getAllAttendances);
 router.post('/insertAttendance', attendanceController.insertAttendance);
 
 // Schedule Events
-router.post('/getScheduleEvent', scheduleEvent.getScheduleEvent);
+router.get('/getScheduleEvent/:churchID', scheduleEvent.getScheduleEvent);
 router.post('/createScheduleEvent', scheduleEvent.createScheduleEvent);
 router.put('/updateScheduleEvent', scheduleEvent.updateScheduleEvent);
-router.delete('/deleteScheduleEvent', scheduleEvent.deleteScheduleEvent);
+router.delete('/deleteScheduleEvent/:id', scheduleEvent.deleteScheduleEvent);
 
 // Church
 router.get('/churches', churchController.getAllChurches);

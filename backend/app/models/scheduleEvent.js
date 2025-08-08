@@ -14,11 +14,11 @@ class ScheduleEvent {
 
     static read(churchID, callback) {
         db.query('SELECT * FROM schedule_event WHERE churchID = ?', [churchID], (err, result) => {
-            if (err) {
-                console.error("Read check error:", err);
-            } else {
-                console.log("Read check result:", result);
-            }
+            // if (err) {
+            //     console.error("Read check error:", err);
+            // } else {
+            //     console.log("Read check result:", result);
+            // }
             callback(err, result);
         });
     }

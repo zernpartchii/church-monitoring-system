@@ -42,5 +42,12 @@ export const formatTo12Hour = (timeStr) => {
     return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true });
 }
 
+export const toPHDateTimeLocal = (dateString) => {
+    const date = new Date(dateString);
+    // Adjust to Philippine Time (UTC+8)
+    date.setHours(date.getHours() + 8);
+    return date.toISOString().slice(0, 16);
+};
+
 
 
