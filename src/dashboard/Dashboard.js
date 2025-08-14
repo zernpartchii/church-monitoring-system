@@ -5,18 +5,16 @@ import Axios from 'axios'
 import { countGroupsByAgeAndGender } from './GetChurchgoer'
 import { generateChart } from './DashboardChart'
 import { useState, useRef } from 'react'
+import { getUserToken } from '../accounts/GetUserToken';
 const Dashboard = () => {
 
     const chartRef = useRef(null); // <--- Create the chart reference
     const [data, setData] = useState([]);
     const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1); // current month
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+    const churchID = getUserToken().churchID;
 
     useEffect(() => {
-        const token = localStorage.getItem('cmsUserToken');
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        const churchID = payload.churchID;
-
         Axios.post('http://localhost:5000/api/getAttendanceByChurch', { churchID: churchID })
             .then((response) => {
                 // console.log(response.data)

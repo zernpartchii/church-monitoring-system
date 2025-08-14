@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Axios from 'axios';
 import Swal from 'sweetalert2';
@@ -69,14 +69,14 @@ function Login() {
         <div className='vh-100 loginBody'>
             <div className='center'>
                 <Header />
-                <div className='center shadow-lg flex-wrap loginForm mx-3' style={{ width: '900px' }}>
+                <div className='center shadow-lg flex-wrap loginForm mx-3'>
                     <div className='flex-fill center loginLogo'>
                         <img className='m-0' height={340} src="../cca.png" alt="Christ Centered Assembly" />
                     </div>
                     <form onSubmit={handleLogin} className="card p-3 border-0 bg-transparent text-white">
                         <div className='card-header bg-transparent border-white'>
-                            <h3>Welcome to CCA Monitoring System</h3>
-                            <p>Securely access your tools to monitor, manage, and <br /> serve in the Christ-Centered Assembly.</p>
+                            <h3>Welcome back! <br /> Let’s serve with joy.</h3>
+                            <p>Every login is another step in serving and uplifting our <br />  Christ-Centered community.</p>
                         </div>
                         <div className='card-body d-flex flex-column'>
                             <div className='flex-fill mb-3'>
@@ -96,7 +96,7 @@ function Login() {
                                     </button>
                                 </div>
                             </div>
-                            <div className='text-end mb-3'>
+                            <div className='text-start mb-3'>
                                 <button type="button" className="btn btn-link text-decoration-none text-warning">Forgot Password?</button>
                             </div>
                             <div className='d-flex flex-column text-center gap-3'>

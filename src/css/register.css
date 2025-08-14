@@ -6,5 +6,9 @@
 }
 
 .registerForm {
-    margin-top: 5rem;
+    margin: 5rem 0;
+}
+
+.registerForm .card {
+    max-width: 60rem;
 }

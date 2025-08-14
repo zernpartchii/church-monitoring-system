@@ -206,7 +206,7 @@ const Schedule = () => {
                             <form onSubmit={handleSubmit} className="modal-content">
                                 <div className="modal-header d-flex flex-between">
                                     <h1 className="modal-title fs-5" id="dayModalLabel">Schedule Event</h1>
-                                    <button type="button" className="btn btn-outline-danger px-3" data-bs-dismiss="modal">X</button>
+                                    <button type="button" className="btn btn-danger px-3" data-bs-dismiss="modal">X</button>
                                 </div>
                                 <div className="modal-body d-flex flex-wrap gap-3">
                                     <div className='d-flex flex-wrap gap-3'>

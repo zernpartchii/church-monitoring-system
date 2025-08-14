@@ -1,6 +1,6 @@
-::-webkit-scrollbar {
-    /* display: none; */
-}
+/* ::-webkit-scrollbar {
+    display: none;
+} */
 
 .loginBody {
     background: linear-gradient(135deg, #031A55, #65D623);
@@ -10,7 +10,8 @@
 }
 
 .loginForm {
-    margin-top: 5rem;
+    width: 900px;
+    margin: 5rem 0;
 }
 
 /* .loginForm {
@@ -21,7 +22,7 @@
 .loginLogo {
     transform: translateX(-250%);
     animation: logoReveal 0.5s ease-in-out forwards;
-} */
+}
 
 @keyframes loginFormReveal {
     0% {
@@ -41,4 +42,4 @@
     100% {
         transform: translateX(0);
     }
-}
+} */

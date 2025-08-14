@@ -218,7 +218,7 @@ const ChurchgoerModal = ({ userData }) => {
 
                     <div className="modal-header d-flex flex-between">
                         <h1 className="modal-title fs-5" id="addChurchgoerModalLabel">Churchgoer Information</h1>
-                        <button type="button" className="btn btn-outline-danger btn-Close px-3" onClick={handleClose} data-bs-dismiss="modal">X</button>
+                        <button type="button" className="btn btn-danger btn-Close px-3" onClick={handleClose} data-bs-dismiss="modal">X</button>
                     </div>
 
                     <form onSubmit={handleSubmit}>

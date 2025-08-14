@@ -7,6 +7,7 @@ import { formatByName, sortAttendanceBy } from './SortAndFilter';
 import editAttendance from './EditAttendance';
 import { exportAttendanceToPDF } from './ExportAttendance';
 import Swal from 'sweetalert2';
+import { getUserToken } from '../accounts/GetUserToken';
 
 const getDaysInMonthByType = (year, month, type = 'Sundays') => {
     const dates = [];
@@ -40,14 +41,13 @@ const ViewAttendance = () => {
     const [viewMode, setViewMode] = useState('Sundays');
     const [printTheme, setPrintTheme] = useState('grid');
 
-    const token = localStorage.getItem('cmsUserToken');
-    const payload = JSON.parse(atob(token.split('.')[1]));
+    const churchID = getUserToken().churchID;
 
     const refreshAttendance = () => {
         const sundaysInMonth = getDaysInMonthByType(year, month, viewMode);
         setSundays(sundaysInMonth); // ← Add this 
         Promise.all([
-            Axios.post('http://localhost:5000/api/churchgoers', { churchID: payload.churchID }),
+            Axios.post('http://localhost:5000/api/churchgoers', { churchID: churchID }),
             Axios.get('http://localhost:5000/api/attendances')
         ])
             .then(([churchgoersRes, attendanceRes]) => {
@@ -231,8 +231,8 @@ const ViewAttendance = () => {
             theme: printTheme,
             type: viewMode,
             churchLogo: '/cca.png',
-            churchName: payload.churchName,
-            churchAddress: payload.churchAddress,
+            churchName: getUserToken().churchName,
+            churchAddress: getUserToken().churchAddress,
             reportTitle: ` Attendance - ${new Date(year, month).toLocaleString('default', { month: 'long' })} ${year}`,
             subText: 'Report Date: ' + new Date().toLocaleString('default', { month: 'long', day: '2-digit', year: 'numeric' }),
         }

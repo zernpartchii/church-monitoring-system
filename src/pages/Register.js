@@ -95,10 +95,10 @@ const Register = () => {
                 <Header />
                 <div className='d-flex flex-wrap center shadow-lg registerForm mx-3'>
                     <img className='m-0' height={340} src="../cca.png" alt="Christ Centered Assembly" />
-                    <form className='card bg-transparent text-white border-0 p-3' onSubmit={handleSubmit} style={{ maxWidth: '70rem' }}>
+                    <form className='card bg-transparent text-white border-0 p-3 ' onSubmit={handleSubmit}>
                         <div className='card-header bg-transparent border-light'>
-                            <h3>New User Registration – CCA Monitoring System</h3>
-                            <p>Create your secure account and join our mission to serve with excellence.</p>
+                            <h3>New User Registration</h3>
+                            <p>Start Your Chapter in Our Christ-Centered Mission.</p>
                         </div>
                         <div className="card-body d-flex flex-wrap gap-3" >
 
