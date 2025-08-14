@@ -1,0 +1,187 @@
+/* =========================================== T O O L  B A R =================================== */
+
+/* Button Toolbar */
+.fc .fc-button {
+    background-color: #157347;
+    border: none;
+    color: white;
+    padding: 0.5rem 1rem;
+}
+
+/* Active Button Toolbar */
+.fc-button-active {
+    background-color: #5C636A !important;
+}
+
+.fc-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* =========================================== M O N T H =================================== */
+/* borders from grid cells */
+.fc-theme-standard td,
+.fc-theme-standard th,
+.fc-theme-standard .fc-scrollgrid {
+    border: solid 1px #666;
+    box-shadow: none;
+}
+
+/* Add Spacing */
+.fc .fc-daygrid-day {
+    padding: 0.5rem;
+    background-color: transparent;
+    box-shadow: none;
+}
+
+/* Custom calendar table header style */
+.fc .fc-col-header-cell,
+.fc-timegrid-axis {
+    background-color: #051842;
+    /* font-weight: bold; */
+    color: #fff;
+    /* text-transform: uppercase; */
+    padding: 10px;
+    /* border-bottom: 1px solid #ccc; */
+}
+
+/* Remove underline from header links and allow wrapping */
+.fc .fc-col-header-cell a {
+    text-decoration: none;
+    color: #fff;
+    white-space: normal;
+    /* ✅ allow wrapping */
+    word-wrap: break-word;
+    /* ✅ wrap long words if needed */
+    overflow-wrap: break-word;
+    /* ✅ modern alternative */
+    text-align: center;
+    /* optional: center the text */
+    display: block;
+    /* ensure it behaves like a block for wrapping */
+}
+
+/* =========================================== D A Y  E V E N T =================================== */
+
+.fc-daygrid-event {
+    /* background-color: #333; */
+    border: none;
+    background-color: transparent;
+    color: white;
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+.fc-daygrid-day:hover {
+    background-color: #E9E9E9 !important;
+}
+
+body.dark .fc-daygrid-day:hover {
+    background-color: #1f1f1f !important;
+}
+
+/* Calendar day number */
+.fc-daygrid-day-number {
+    color: #666 !important;
+    text-decoration: none !important;
+}
+
+/* =========================================== W E E K =================================== */
+
+/* Calendar Main event */
+.fc-event-main-frame {
+    border: none;
+    padding-left: 5px !important;
+    font-weight: bold;
+}
+
+/* Calendar Main event not hover */
+body.light .fc-event-main-frame {
+    color: #333 !important;
+}
+
+/* Calendar Main event hover */
+body.light .fc-event-main-frame:hover {
+    color: #fff !important;
+}
+
+/* Event border */
+.fc-event {
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 5px;
+    margin: 5px;
+}
+
+body.light .fc-event {
+    background-color: #E9E9E9;
+    color: #333;
+}
+
+body.light .fc-event:hover {
+    background-color: #727E89;
+    color: #fff;
+}
+
+/* Event background */
+body.dark .fc-event {
+    background-color: #2F2F2F;
+}
+
+/* Event hover */
+body.dark .fc-event:hover {
+    background-color: #232F3A !important;
+}
+
+/* =========================================== L I S T =================================== */
+
+/* Header Border */
+.fc-listWeek-view.fc-view.fc-list.fc-list-sticky {
+    border: none !important;
+}
+
+/* Header Background light mode */
+body.light .fc-list-day-cushion.fc-cell-shaded {
+    background-color: #D8D8D8 !important;
+}
+
+/* Header Text color light mode*/
+body.light .fc-list-day-text,
+body.light .fc-list-day-side-text {
+    color: #333;
+    text-decoration: none;
+}
+
+/* Header Background dark mode*/
+body.dark .fc-list-day-cushion.fc-cell-shaded {
+    background-color: #2F2F2F !important;
+}
+
+/* Header Text color dark mode*/
+body.dark .fc-list-day-text,
+body.dark .fc-list-day-side-text {
+    color: #fff;
+    text-decoration: none;
+}
+
+body.dark .fc-list-event:hover .fc-list-event-time,
+body.dark .fc-list-event:hover .fc-list-event-title {
+    color: #333;
+}
+
+/* =========================================== T H E M E =================================== */
+
+/* Theme mode */
+
+body.light .fc .fc-timegrid-slot-label,
+body.light .fc-timegrid-axis.fc-scrollgrid-shrink {
+    background-color: #f8f9fa;
+    color: #444;
+}
+
+body.dark .fc .fc-timegrid-slot-label,
+body.dark .fc-timegrid-axis.fc-scrollgrid-shrink {
+    background-color: #121212;
+    color: #f8f9fa;
+}

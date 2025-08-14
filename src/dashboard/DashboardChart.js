@@ -3,6 +3,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { formatDateShort } from '../util/DateFomatter';
 Chart.register(ChartDataLabels);
 
+// Global chart instance
 let chartInstance = null;
 
 export const generateChart = (chartRef, rawData, selectedMonth, selectedYear) => {
@@ -18,10 +19,22 @@ export const generateChart = (chartRef, rawData, selectedMonth, selectedYear) =>
         return d.getMonth() + 1 === selectedMonth && d.getFullYear() === selectedYear;
     });
 
+
+    if (filteredData.length === 0) {
+        const canvas = chartRef.current;
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.font = '26px Arial';
+        ctx.fillStyle = '#666';
+        ctx.textAlign = 'start';
+        ctx.fillText('No data available.', 50, 60);
+        return;
+    }
+
     // Group and count by date and status
     const grouped = {};
     filteredData.forEach(({ date, status }) => {
-        const d = new Date(date).toISOString().split('T')[0];
+        const d = new Date(date).toLocaleDateString('en-CA').split('T')[0];
         if (!grouped[d]) grouped[d] = { Present: 0, Absent: 0, Excuse: 0, Visitor: 0 };
         grouped[d][status] = (grouped[d][status] || 0) + 1;
     });
@@ -72,7 +85,7 @@ export const generateChart = (chartRef, rawData, selectedMonth, selectedYear) =>
                 },
                 title: {
                     display: true,
-                    text: 'Attendance Summary per Service',
+                    text: 'Attendance Summary',
                     font: { size: 18, weight: 'normal' }, // ✅ Set title font size here
                 },
                 datalabels: {

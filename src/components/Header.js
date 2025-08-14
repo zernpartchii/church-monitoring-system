@@ -1,5 +1,5 @@
 import { React, useEffect } from 'react'
-
+import { getUserToken } from '../accounts/GetUserToken';
 const Header = () => {
 
     const handleResize = () => {
@@ -23,10 +23,8 @@ const Header = () => {
     };
 
     useEffect(() => {
-        const token = localStorage.getItem('cmsUserToken');
-        const payload = JSON.parse(atob(token.split('.')[1]));
         const churchName = document.querySelector('.topbarTitle');
-        churchName.textContent = payload.churchName;
+        churchName.textContent = getUserToken().churchName;
 
         // Initial check
         handleResize();
@@ -52,12 +50,12 @@ const Header = () => {
         }
     };
     return (
-        <>
-            <div className='p-2 sticky-top topbar'>
-                <div className='d-flex gap-2 align-items-center px-2'>
-                    <span className="material-symbols-outlined cursor menu" onClick={handleMenuToggle}>
-                        left_panel_close
-                    </span>
+        <div className='p-2 sticky-top topbar '>
+            <div className=' center gap-2 px-2 topNav my-2'>
+                <span className="material-symbols-outlined cursor menu" onClick={handleMenuToggle}>
+                    left_panel_close
+                </span>
+                <div className="center gap-2 flex-wrap me-auto">
                     <div className='userTopLogo'>
                         <img src="../../cca.png" className="churchLogoMobile" />
                     </div>
@@ -65,7 +63,7 @@ const Header = () => {
                 </div>
             </div>
             <hr className='m-0' />
-        </>
+        </div>
     )
 }
 

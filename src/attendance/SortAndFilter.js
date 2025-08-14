@@ -1,7 +1,9 @@
 import Swal from 'sweetalert2';
+
 export const formatByName = () => {
     const fullName = document.querySelectorAll('.fullName');
     const formalName = document.querySelectorAll('.formalName');
+    const btnFormatName = document.querySelector('.btnFormatName');
 
     let formattedTo = '';
 
@@ -12,10 +14,12 @@ export const formatByName = () => {
             fullName[index].classList.add('d-none');
             formalName[index].classList.remove('d-none');
             formattedTo = 'Lastname Firstname';
+            btnFormatName.textContent = 'swap_horiz';
         } else {
             fullName[index].classList.remove('d-none');
             formalName[index].classList.add('d-none');
             formattedTo = 'Firstname Lastname';
+            btnFormatName.textContent = 'compare_arrows';
         }
     });
 

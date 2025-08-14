@@ -1,8 +1,7 @@
 /* Sidebar Open */
-
 .sidebarOpen {
     width: 20rem;
-    transition: width 0.5s ease-in-out;
+    transition: width 0.5s ease-out;
 }
 
 .sidebarOpen .titleNav,
@@ -21,7 +20,7 @@
 /* Sidebar Close */
 .sidebarClose {
     width: 5rem;
-    transition: width 0.5s ease-in-out;
+    transition: width 0.5s ease-out;
 }
 
 .sidebarClose .hover {
@@ -53,29 +52,44 @@
 /* Mobile Screen */
 @media screen and (max-width: 500px) {
 
+    .topNav {
+        flex-direction: row-reverse !important;
+    }
+
     /* Sidebar Open */
     .sidebar.mobileNav.sidebarOpen {
         position: absolute !important;
         z-index: 9999 !important;
         width: 17rem;
-        transition: width 0.5s ease-in-out;
+        transition: width 0.5s ease-out;
     }
 
-    .sidebar.mobileNav.sidebarOpen,
+    /* .sidebar.mobileNav.sidebarOpen, */
     .sidebarOpen .icon,
     .closeSidebar,
     .churchLogoMobile {
         display: flex !important;
     }
 
+    .sidebarOpen .menu {
+        display: none !important;
+    }
+
     /* ============================================================================================================= */
     /* Sidebar Close */
     .sidebar.mobileNav.sidebarClose {
+        position: absolute !important;
+        z-index: 9999 !important;
         width: 0rem;
-        transition: width 0.5s ease-in-out;
+        transition: width 0.5s ease-out;
     }
 
-    .sidebar.mobileNav.sidebarClose,
+    .sidebarClose .churchLogo,
+    .sidebarClose .closeSidebar {
+        display: none !important;
+    }
+
+    /* .sidebar.mobileNav.sidebarClose, */
     .sidebarClose .icon {
         display: none !important;
     }

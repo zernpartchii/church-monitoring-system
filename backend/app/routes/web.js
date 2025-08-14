@@ -3,6 +3,7 @@ const router = express.Router();
 const churchController = require('../controllers/churchController');
 const churchGoerController = require('../controllers/churchGoerController');
 const attendanceController = require('../controllers/attendanceController');
+const scheduleEvent = require('../controllers/scheduleEvent');
 const accountController = require('../controllers/accountController');
 const dashboard = require('../controllers/dashboardController');
 // Dashboard
@@ -11,6 +12,12 @@ router.post('/getAttendanceByChurch', dashboard.getAttendanceByChurch);
 // Attendance
 router.get('/attendances', attendanceController.getAllAttendances);
 router.post('/insertAttendance', attendanceController.insertAttendance);
+
+// Schedule Events
+router.get('/getScheduleEvent/:churchID', scheduleEvent.getScheduleEvent);
+router.post('/createScheduleEvent', scheduleEvent.createScheduleEvent);
+router.put('/updateScheduleEvent', scheduleEvent.updateScheduleEvent);
+router.delete('/deleteScheduleEvent/:id', scheduleEvent.deleteScheduleEvent);
 
 // Church
 router.get('/churches', churchController.getAllChurches);

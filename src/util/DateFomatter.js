@@ -26,9 +26,28 @@ export const formatDateForInput = (isoDateString) => {
 
 export const formatDateShort = (dateStr) => {
     const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', {
+    return date.toLocaleDateString('en-CA', {
         month: 'long', // "Jan", "Feb", ...
         day: '2-digit'  // "01", "02", ..., "31"
     });
 }
+
+export const formatTo12Hour = (timeStr) => {
+    const [hour, minute] = timeStr.split(':');
+    const date = new Date();
+    date.setHours(+hour);
+    date.setMinutes(+minute);
+
+    // Convert "17:00" to "5:00 PM"
+    return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true });
+}
+
+export const toPHDateTimeLocal = (dateString) => {
+    const date = new Date(dateString);
+    // Adjust to Philippine Time (UTC+8)
+    date.setHours(date.getHours() + 8);
+    return date.toISOString().slice(0, 16);
+};
+
+
 

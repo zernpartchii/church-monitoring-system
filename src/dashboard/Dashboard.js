@@ -1,22 +1,20 @@
 import React, { useContext, useEffect } from 'react'
 import Sidebar from '../components/Sidebar'
 import Header from '../components/Header'
-import { countGroupsByAgeAndGender } from './GetChurchgoer'
 import Axios from 'axios'
+import { countGroupsByAgeAndGender } from './GetChurchgoer'
 import { generateChart } from './DashboardChart'
 import { useState, useRef } from 'react'
+import { getUserToken } from '../accounts/GetUserToken';
 const Dashboard = () => {
 
     const chartRef = useRef(null); // <--- Create the chart reference
     const [data, setData] = useState([]);
     const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1); // current month
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+    const churchID = getUserToken().churchID;
 
     useEffect(() => {
-        const token = localStorage.getItem('cmsUserToken');
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        const churchID = payload.churchID;
-
         Axios.post('http://localhost:5000/api/getAttendanceByChurch', { churchID: churchID })
             .then((response) => {
                 // console.log(response.data)
@@ -32,7 +30,7 @@ const Dashboard = () => {
     }, []);
 
     useEffect(() => {
-        generateChart(chartRef, data, selectedMonth, selectedYear);
+        generateChart(chartRef, data, selectedMonth, selectedYear,);
     }, [data, selectedMonth, selectedYear]);
 
     const countMembers = (churchID) => {
@@ -169,7 +167,7 @@ const Dashboard = () => {
                             </div>
                         </div>
                     </div>
-                    <div className='card p-3 mt-3 overflow-auto' style={{ maxWidth: "100%", height: "40vh" }}>
+                    <div className='card p-3 mt-3' style={{ maxWidth: "75.8rem" }}>
                         <div className='center input-group'>
                             <select style={{ maxWidth: '8rem' }} className='form-select' value={selectedMonth} onChange={(e) => setSelectedMonth(Number(e.target.value))}>
                                 {monthOptions.map((m, i) => (
@@ -177,12 +175,17 @@ const Dashboard = () => {
                                 ))}
                             </select>
                             <select style={{ maxWidth: '6rem' }} className='form-select' value={selectedYear} onChange={(e) => setSelectedYear(Number(e.target.value))}>
-                                {years.map((y, i) => (
-                                    <option key={i} value={y}>{y}</option>
-                                ))}
+                                {years.length === 0 ? <option>Year</option> :
+                                    years.map((y, i) => (
+                                        <option key={i} value={y}>{y}</option>
+                                    ))
+                                }
                             </select>
                         </div>
-                        <canvas ref={chartRef} id="attendanceChart" className='overflow-auto' style={{ minWidth: "550px", height: "550px" }}></canvas>
+                        {/* <h5 className='text-center mt-3 m-0'>Attendance Summary</h5> */}
+                        <div className='center' style={{ height: "35vh" }}>
+                            <canvas ref={chartRef} id="attendanceChart"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>

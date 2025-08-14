@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Axios from 'axios';
 import Swal from 'sweetalert2';
+import '../css/login.css';
+import Header from './Header';
 function Login() {
 
     const handleShowPass = () => {
@@ -64,38 +66,49 @@ function Login() {
     }
 
     return (
-        <div className='vh-100'>
-            <div className='center h-100'>
-                <form onSubmit={handleLogin} className="card p-3 m-3" style={{ maxWidth: '500px' }}>
-                    <div className='card-header bg-transparent'>
-                        <h2>Worship Track</h2>
-                        <p>Your secure entry to monitor, manage, and serve.</p>
+        <div className='vh-100 loginBody'>
+            <div className='center'>
+                <Header />
+                <div className='center shadow-lg flex-wrap loginForm mx-3'>
+                    <div className='flex-fill center loginLogo'>
+                        <img className='m-0' height={340} src="../cca.png" alt="Christ Centered Assembly" />
                     </div>
-                    <div className='card-body d-flex gap-3 flex-column'>
-                        <div>
-                            <label htmlFor="username" className="form-label">Username or Email</label>
-                            <input type="text" className="form-control" id="username" value={formData.username} onChange={handleInput} required placeholder="Enter your username or email" />
+                    <form onSubmit={handleLogin} className="card p-3 border-0 bg-transparent text-white">
+                        <div className='card-header bg-transparent border-white'>
+                            <h3>Welcome back! <br /> Let’s serve with joy.</h3>
+                            <p>Every login is another step in serving and uplifting our <br />  Christ-Centered community.</p>
                         </div>
-                        <div>
-                            <label htmlFor="password" className="form-label">Password</label>
-                            <div className='input-group'>
-                                <input type="password" className="form-control" id="password" value={formData.password} onChange={handleInput} required placeholder="Enter your password" />
-                                <button className="btn btn-light py-0 center btnShowPass" onClick={handleShowPass} type="button">
-                                    <span className="material-symbols-outlined eye">
-                                        visibility
-                                    </span>
-                                </button>
+                        <div className='card-body d-flex flex-column'>
+                            <div className='flex-fill mb-3'>
+                                <label htmlFor="username" className="form-label">Username or Email</label>
+                                <input type="text" className="form-control" id="username" value={formData.username}
+                                    onChange={handleInput} required placeholder="Enter your username or email" />
                             </div>
-                            <button type="button" className="btn btn-link text-decoration-none text-danger">Forgot Password?</button>
+                            <div className='flex-fill'>
+                                <label htmlFor="password" className="form-label">Password</label>
+                                <div className='input-group'>
+                                    <input type="password" className="form-control" id="password" value={formData.password}
+                                        onChange={handleInput} required placeholder="Enter your password" />
+                                    <button className="btn btn-light py-0 center border btnShowPass" onClick={handleShowPass} type="button">
+                                        <span className="material-symbols-outlined eye">
+                                            visibility
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div className='text-start mb-3'>
+                                <button type="button" className="btn btn-link text-decoration-none text-warning">Forgot Password?</button>
+                            </div>
+                            <div className='d-flex flex-column text-center gap-3'>
+                                <button type='submit' className="btn btn-success">Login</button>
+                                <p>Don't have an account? <Link to="/cms/register"
+                                    className="text-decoration-none text-dark badge bg-warning">Register</Link></p>
+                            </div>
                         </div>
-                        <div className='d-flex flex-column gap-2'>
-                            <button type='submit' className="btn btn-lg btn-success">Login</button>
-                            <Link to='/cms/register' className="btn btn-lg btn-outline-secondary">Register</Link>
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
-        </div>
+        </div >
     )
 }
 

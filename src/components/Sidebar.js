@@ -1,7 +1,7 @@
 import { React, useEffect } from 'react'
 import { Link } from 'react-router-dom';
 import { UserView } from './UserView';
-function Sidebar() {
+const Sidebar = () => {
 
     // Example: toggle mode on button click
     useEffect(() => {
@@ -15,6 +15,7 @@ function Sidebar() {
         const sidebar = document.querySelector('.sidebar');
         const table = document.querySelector('.table');
         const theme = localStorage.getItem('theme');
+
         if (theme === 'light_mode') {
 
             document.body.classList.add('light');
@@ -74,6 +75,7 @@ function Sidebar() {
 
     const handleLogout = () => {
         localStorage.removeItem('cmsUserToken');
+        document.body.classList.remove('dark');
     };
 
     return (
@@ -102,18 +104,12 @@ function Sidebar() {
                         </span>
                         <p className="titleNav m-0">Attendance</p>
                     </Link>
-                    <li className="hover list-group-item">
+                    <Link to="/cms/schedule" className="hover list-group-item">
                         <span className="material-symbols-outlined icon">
                             calendar_month
                         </span>
-                        <p className="titleNav m-0">Schedule</p>
-                    </li>
-                    <li className="hover list-group-item">
-                        <span className="material-symbols-outlined icon">
-                            event
-                        </span>
-                        <p className="titleNav m-0">Events</p>
-                    </li>
+                        <p className="titleNav m-0">Schedule Event</p>
+                    </Link>
                     <li className="hover list-group-item">
                         <span className="material-symbols-outlined icon">
                             demography

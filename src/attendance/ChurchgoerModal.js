@@ -56,6 +56,16 @@ const ChurchgoerModal = ({ userData }) => {
         document.querySelector('.btnDeleteChurchgoer').classList.add('d-none');
     };
 
+    const handleClose = () => {
+
+        // Optionally reset
+        setFormData(data);
+
+        // Close the modal
+        document.querySelector('.btn-Close')?.click();
+        document.querySelector('.btnDeleteChurchgoer').classList.add('d-none');
+    }
+
     const handleCreateUserData = () => {
         Axios.post(`${url}/insertChurchGoer`, formData)
             .then((response) => {
@@ -206,8 +216,9 @@ const ChurchgoerModal = ({ userData }) => {
             <div className="modal-dialog modal-xl modal-dialog-centered">
                 <div className="modal-content">
 
-                    <div className="modal-header">
+                    <div className="modal-header d-flex flex-between">
                         <h1 className="modal-title fs-5" id="addChurchgoerModalLabel">Churchgoer Information</h1>
+                        <button type="button" className="btn btn-danger btn-Close px-3" onClick={handleClose} data-bs-dismiss="modal">X</button>
                     </div>
 
                     <form onSubmit={handleSubmit}>
@@ -261,7 +272,7 @@ const ChurchgoerModal = ({ userData }) => {
 
                         <div className="modal-footer d-flex">
                             <button type="button" className="btn btn-danger me-auto btnDeleteChurchgoer d-none" onClick={handleDeleteUserData}>Delete</button>
-                            <button type="button" className="btn btn-secondary btn-Close" onClick={handleResetForms} data-bs-dismiss="modal">Close</button>
+                            <button type="button" className="btn btn-secondary btn-Close" onClick={handleClose} data-bs-dismiss="modal">Cancel</button>
                             <button type="submit" className="btn btn-success">Save Changes</button>
                         </div>
                     </form>
