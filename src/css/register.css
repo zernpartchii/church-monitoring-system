@@ -1,0 +1,10 @@
+.registerBody {
+    background: linear-gradient(135deg, #031A55, #65D623);
+    position: fixed;
+    overflow: auto;
+    width: 100%;
+}
+
+.registerForm {
+    margin-top: 5rem;
+}

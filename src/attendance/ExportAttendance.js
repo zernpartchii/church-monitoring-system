@@ -145,6 +145,7 @@ export const exportAttendanceToPDF = async (data) => {
         }
     });
 
-    const fileName = data.type + data.reportTitle.replace(/[^a-zA-Z0-9]/g, '_');
+    const date = new Date();
+    const fileName = date.getFullYear() + "-" + date.toLocaleString('default', { month: 'long' }) + "-" + data.type + "-Attendance";
     doc.save(fileName + '.pdf');
 };

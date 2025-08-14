@@ -108,7 +108,6 @@ const Schedule = () => {
         setSchedule(data);
         ReadScheduleEvent();
         document.querySelector('.btnDeleteSched').classList.add('d-none');
-        document.querySelector('.btnCloseSched').click();
     }
 
     // Create and Update Data
@@ -125,6 +124,7 @@ const Schedule = () => {
                     text: "Schedule Event has been updated successfully."
                 })
                 handleReset();
+                document.querySelector('.btnCloseSched').click();
             }).catch((error) => {
                 Swal.fire({
                     icon: "error",
@@ -141,6 +141,7 @@ const Schedule = () => {
                     text: "Schedule Event has been added successfully."
                 })
                 handleReset();
+                document.querySelector('.btnCloseSched').click();
             }).catch((error) => {
                 Swal.fire({
                     icon: "error",
@@ -160,6 +161,7 @@ const Schedule = () => {
                 text: "Schedule Event has been deleted successfully."
             })
             handleReset();
+            document.querySelector('.btnCloseSched').click();
         }).catch((error) => {
             Swal.fire({
                 icon: "error",
@@ -200,49 +202,53 @@ const Schedule = () => {
 
                     <div className="modal fade" id="dayModal" data-bs-backdrop="static"
                         data-bs-keyboard="false" tabIndex="-1" aria-labelledby="dayModalLabel" aria-hidden="true">
-                        <div className="modal-dialog modal-dialog-centered">
+                        <div className="modal-dialog modal-lg modal-dialog-centered">
                             <form onSubmit={handleSubmit} className="modal-content">
                                 <div className="modal-header d-flex flex-between">
                                     <h1 className="modal-title fs-5" id="dayModalLabel">Schedule Event</h1>
                                     <button type="button" className="btn btn-outline-danger px-3" data-bs-dismiss="modal">X</button>
                                 </div>
-                                <div className="modal-body d-flex flex-column gap-3">
-                                    <div className='flex-fill'>
-                                        <label>Schedule Event Name</label>
-                                        <input type='text' required value={schedule.eventName || ''}
-                                            onChange={handleOnChange} className='form-control' id='eventName' />
-                                    </div>
-                                    <div className='flex-fill'>
-                                        <label>Location</label>
-                                        <input type='text' required value={schedule.eventLocation || ''}
-                                            onChange={handleOnChange} className='form-control' id='eventLocation' />
-                                    </div>
-                                    <div className='flex-fill'>
-                                        <label>Host</label>
-                                        <input type='text' required value={schedule.eventHost || ''}
-                                            onChange={handleOnChange} className='form-control' id='eventHost' />
-                                    </div>
-                                    <div className='flex-fill'>
-                                        <label>Date Time Start</label>
-                                        <input type='datetime-local' required value={schedule.eventStart || ''}
-                                            onChange={handleOnChange} className='form-control' id='eventStart' />
-                                    </div>
-                                    <div className='flex-fill'>
-                                        <label>Date Time End</label>
-                                        <input type='datetime-local' required value={schedule.eventEnd || ''}
-                                            onChange={handleOnChange} className='form-control' id='eventEnd' />
+                                <div className="modal-body d-flex flex-wrap gap-3">
+                                    <div className='d-flex flex-wrap gap-3'>
+                                        <div className='flex-fill'>
+                                            <label>Schedule Event Name</label>
+                                            <input type='text' required value={schedule.eventName || ''}
+                                                onChange={handleOnChange} className='form-control' id='eventName' />
+                                        </div>
+                                        <div className='flex-fill'>
+                                            <label>Host</label>
+                                            <input type='text' required value={schedule.eventHost || ''}
+                                                onChange={handleOnChange} className='form-control' id='eventHost' />
+                                        </div>
+                                        <div className='flex-fill w-100'>
+                                            <label>Location</label>
+                                            <input type='text' required value={schedule.eventLocation || ''}
+                                                onChange={handleOnChange} className='form-control' id='eventLocation' />
+                                        </div>
+                                        <div className='flex-fill'>
+                                            <label>Date Time Start</label>
+                                            <input type='datetime-local' required value={schedule.eventStart || ''}
+                                                onChange={handleOnChange} className='form-control' id='eventStart' />
+                                        </div>
+                                        <div className='flex-fill'>
+                                            <label>Date Time End</label>
+                                            <input type='datetime-local' required value={schedule.eventEnd || ''}
+                                                onChange={handleOnChange} className='form-control' id='eventEnd' />
+                                        </div>
                                     </div>
                                     <div className='flex-fill'>
                                         <label>Descripton (Optional)</label>
-                                        <textarea type='text' value={schedule.eventDescription || ''}
+                                        <textarea type='text' value={schedule.eventDescription || ''} rows={4}
                                             onChange={handleOnChange} className='form-control' id='eventDescription' />
                                     </div>
                                 </div>
                                 <div className="modal-footer d-flex">
-                                    <button type="button" className="btn btn-danger me-auto btnDeleteSched d-none" onClick={handleDelete}>Delete</button>
-                                    <button type="button" className="btn btn-outline-secondary text-white" onClick={handleReset}>Reset</button>
-                                    <button type="button" className="btn btn-secondary px-3 btnCloseSched" data-bs-dismiss="modal">Cancel</button>
-                                    <button type="submit" className="btn btn-success">Save Schedule</button>
+                                    <button type="button" className="btn btn-danger btnDeleteSched d-none" onClick={handleDelete}>Delete</button>
+                                    <div className='d-flex gap-2 ms-auto'>
+                                        {/* <button type="button" className="btn btn-outline-secondary text-white" onClick={handleReset}>Reset</button> */}
+                                        <button type="button" className="btn btn-secondary px-3 btnCloseSched" data-bs-dismiss="modal">Cancel</button>
+                                        <button type="submit" className="btn btn-success">Save Schedule</button>
+                                    </div>
                                 </div>
                             </form>
                         </div>

@@ -2,6 +2,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import AddChurch from './church/AddChurch';
@@ -17,7 +18,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="*" element={<h1>404 Not Found</h1>} />
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/cms/login" element={<Login />} />
         <Route path="/cms/register" element={<Register />} />
         <Route path="/cms/add-church" element={<AddChurch />} />

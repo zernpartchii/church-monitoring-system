@@ -75,6 +75,7 @@ const Sidebar = () => {
 
     const handleLogout = () => {
         localStorage.removeItem('cmsUserToken');
+        document.body.classList.remove('dark');
     };
 
     return (

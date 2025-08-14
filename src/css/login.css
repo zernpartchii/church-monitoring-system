@@ -1,0 +1,44 @@
+::-webkit-scrollbar {
+    /* display: none; */
+}
+
+.loginBody {
+    background: linear-gradient(135deg, #031A55, #65D623);
+    position: fixed;
+    overflow: auto;
+    width: 100%;
+}
+
+.loginForm {
+    margin-top: 5rem;
+}
+
+/* .loginForm {
+    transform: translateX(250%);
+    animation: loginFormReveal 0.5s ease-in-out forwards;
+}
+
+.loginLogo {
+    transform: translateX(-250%);
+    animation: logoReveal 0.5s ease-in-out forwards;
+} */
+
+@keyframes loginFormReveal {
+    0% {
+        transform: translateX(250%);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+@keyframes logoReveal {
+    0% {
+        transform: translateX(-250%);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}

@@ -1,0 +1,142 @@
+ .nav-list {
+     display: flex;
+     flex-wrap: wrap;
+     gap: 30px;
+     list-style: none;
+     margin: 0;
+     padding: 0;
+ }
+
+ .nav-list li a {
+     color: #fff;
+     text-decoration: none;
+     font-weight: bold;
+     padding: 10px;
+ }
+
+ .nav-list li a:hover {
+     background-color: #397a14;
+     border-radius: 5px;
+     transition: 0.5s;
+ }
+
+ .headings {
+     font-size: 70px;
+     font-weight: bold;
+     margin: 0;
+ }
+
+ .title {
+     font-size: 50px;
+ }
+
+ .btnRegister,
+ .btnLogin {
+     background-color: #438E17;
+     border: 2px solid #438E17;
+     width: 200px;
+     color: #fff;
+     padding: 10px 20px;
+     border-radius: 5px;
+     cursor: pointer;
+     transition: background-color 0.3s ease;
+ }
+
+ .btnRegister,
+ .btnRegister:hover+.btnLogin {
+     background-color: transparent;
+
+ }
+
+ .btnRegister:hover {
+     background-color: #438E17;
+     color: #fff;
+ }
+
+
+ .left {
+     background: linear-gradient(135deg, #031A55, #65D623);
+     color: #fff;
+     border-radius: 0 0 100rem 0;
+     min-height: 600px;
+     animation: bgReveal 3s forwards, leftReveal 1s forwards;
+     padding-bottom: 50px;
+ }
+
+ .right {
+     animation: rightReveal 1s forwards;
+ }
+
+ /* Animation for reveal */
+ @keyframes leftReveal {
+     0% {
+         transform: translateX(-100%);
+     }
+
+     100% {
+         transform: translateX(0);
+     }
+ }
+
+ /* Animation for reveal */
+ @keyframes bgReveal {
+     0% {
+         background-size: 150% 150%;
+     }
+
+     100% {
+         background-size: 100% 100%;
+     }
+ }
+
+ @keyframes rightReveal {
+     0% {
+         transform: translateY(-100%);
+     }
+
+     100% {
+         transform: translateY(0);
+     }
+ }
+
+ @media screen and (max-width: 991px) {
+     .landingPageMenu {
+         display: flex !important;
+         background-color: #367910;
+         color: #fff;
+         padding: 10px;
+         border-radius: 5px;
+         transition: 0.5s;
+     }
+
+     .landingPageMenu:hover {
+         background-color: #438E17;
+     }
+
+     .headings {
+         font-size: 30px;
+     }
+
+     .nav-list {
+         background: linear-gradient(135deg, #031A55, #65D623);
+         display: block;
+         position: fixed;
+         top: 0;
+         left: 0;
+         width: 300px;
+         height: 100vh;
+         transform: translateX(-100%);
+         padding: 20px;
+         transition: all 0.5s ease-in-out;
+     }
+
+
+     .nav-list li {
+         margin-top: 30px;
+     }
+
+     .nav-list.active {
+         transform: translateX(0);
+     }
+
+ }

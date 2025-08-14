@@ -45,8 +45,32 @@ body {
     gap: 10px;
 }
 
+.flex-center {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
 .swal2-actions {
     gap: 10px;
     display: flex;
     justify-content: center;
+}
+
+.ccaLogo {
+    background-color: #fff;
+    border-radius: 100%;
+}
+
+/* ================================================= SCHEDULE EVENT ======================= */
+
+/* Set Minimum Width */
+.fc-scrollgrid {
+    min-width: 100rem !important;
+}
+
+/* Set Horizontal Scroll */
+.fc-daygrid,
+.fc-timegrid {
+    overflow-x: auto !important;
 }
