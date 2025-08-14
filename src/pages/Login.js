@@ -75,18 +75,20 @@ function Login() {
                     </div>
                     <form onSubmit={handleLogin} className="card p-3 border-0 bg-transparent text-white">
                         <div className='card-header bg-transparent border-white'>
-                            <h3>PraiseTrack Manager</h3>
-                            <p>Your centralized worship management system.</p>
+                            <h3>Welcome to CCA Monitoring System</h3>
+                            <p>Securely access your tools to monitor, manage, and <br /> serve in the Christ-Centered Assembly.</p>
                         </div>
                         <div className='card-body d-flex flex-column'>
                             <div className='flex-fill mb-3'>
                                 <label htmlFor="username" className="form-label">Username or Email</label>
-                                <input type="text" className="form-control" id="username" value={formData.username} onChange={handleInput} required placeholder="Enter your username or email" />
+                                <input type="text" className="form-control" id="username" value={formData.username}
+                                    onChange={handleInput} required placeholder="Enter your username or email" />
                             </div>
                             <div className='flex-fill'>
                                 <label htmlFor="password" className="form-label">Password</label>
                                 <div className='input-group'>
-                                    <input type="password" className="form-control" id="password" value={formData.password} onChange={handleInput} required placeholder="Enter your password" />
+                                    <input type="password" className="form-control" id="password" value={formData.password}
+                                        onChange={handleInput} required placeholder="Enter your password" />
                                     <button className="btn btn-light py-0 center border btnShowPass" onClick={handleShowPass} type="button">
                                         <span className="material-symbols-outlined eye">
                                             visibility
@@ -99,7 +101,8 @@ function Login() {
                             </div>
                             <div className='d-flex flex-column text-center gap-3'>
                                 <button type='submit' className="btn btn-success">Login</button>
-                                <p>Don't have an account? <Link to="/cms/register" className="text-decoration-none text-dark badge bg-warning">Register</Link></p>
+                                <p>Don't have an account? <Link to="/cms/register"
+                                    className="text-decoration-none text-dark badge bg-warning">Register</Link></p>
                             </div>
                         </div>
                     </form>

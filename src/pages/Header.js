@@ -19,7 +19,7 @@ const Header = () => {
                 <li><a href="/">Gallary</a></li>
                 <li><a href="/">Contact</a></li>
             </ul>
-            <span class="material-symbols-outlined ms-auto cursor landingPageMenu d-none" onClick={handleMenu}>
+            <span className="material-symbols-outlined ms-auto cursor landingPageMenu d-none" onClick={handleMenu}>
                 menu
             </span>
         </div>

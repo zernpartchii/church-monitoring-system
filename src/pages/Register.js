@@ -97,33 +97,37 @@ const Register = () => {
                     <img className='m-0' height={340} src="../cca.png" alt="Christ Centered Assembly" />
                     <form className='card bg-transparent text-white border-0 p-3' onSubmit={handleSubmit} style={{ maxWidth: '70rem' }}>
                         <div className='card-header bg-transparent border-light'>
-                            <h3>PraiseTrack Manager</h3>
-                            <p>Your centralized worship management system.</p>
+                            <h3>New User Registration – CCA Monitoring System</h3>
+                            <p>Create your secure account and join our mission to serve with excellence.</p>
                         </div>
                         <div className="card-body d-flex flex-wrap gap-3" >
 
-                            <div className='d-flex flex-fill gap-3'>
-                                <div className='flex-fill'>
-                                    <label htmlFor="churchName" className="form-label">Church Name</label>
-                                    <input type="text" required value={church.churchName} onChange={handleChurchChange} className="form-control" id="churchName" placeholder="Enter church name" />
-                                </div>
-                                <div className='flex-fill'>
-                                    <label htmlFor="churchAddress" className="form-label">Church Address</label>
-                                    <input type="text" required value={church.churchAddress} onChange={handleChurchChange} className="form-control" id="churchAddress" placeholder="Enter church address" />
-                                </div>
+                            <div className='flex-fill'>
+                                <label htmlFor="churchName" className="form-label">Church Name</label>
+                                <input type="text" required value={church.churchName}
+                                    onChange={handleChurchChange} className="form-control" id="churchName" placeholder="Enter church name" />
+                            </div>
+
+                            <div className='flex-fill'>
+                                <label htmlFor="churchAddress" className="form-label">Church Address</label>
+                                <input type="text" required value={church.churchAddress}
+                                    onChange={handleChurchChange} className="form-control" id="churchAddress" placeholder="Enter church address" />
                             </div>
 
                             <div className='flex-fill'>
                                 <label htmlFor="hostPastor" className="form-label">Host Pastor</label>
                                 <div className='flex flex-wrap'>
                                     <div className='flex-fill'>
-                                        <input type="text" required value={pastors.firstName} onChange={handlePastorsChange} className="form-control" id="firstName" placeholder="First Name" />
+                                        <input type="text" required value={pastors.firstName}
+                                            onChange={handlePastorsChange} className="form-control" id="firstName" placeholder="First Name" />
                                     </div>
                                     <div className='flex-fill'>
-                                        <input type="text" value={pastors.middleName} onChange={handlePastorsChange} className="form-control" id="middleName" placeholder="Middle Name" />
+                                        <input type="text" value={pastors.middleName}
+                                            onChange={handlePastorsChange} className="form-control" id="middleName" placeholder="Middle Name" />
                                     </div>
                                     <div className='flex-fill'>
-                                        <input type="text" required value={pastors.lastName} onChange={handlePastorsChange} className="form-control" id="lastName" placeholder="Last Name" />
+                                        <input type="text" required value={pastors.lastName}
+                                            onChange={handlePastorsChange} className="form-control" id="lastName" placeholder="Last Name" />
                                     </div>
                                 </div>
                             </div>
@@ -139,22 +143,27 @@ const Register = () => {
                                 </div>
                                 <div className='flex-fill'>
                                     <label htmlFor="dateOfBirth" className="form-label">Date of Birth</label>
-                                    <input type="date" required value={pastors.dateOfBirth} onChange={handlePastorsChange} className="form-control" id="dateOfBirth" />
+                                    <input type="date" required value={pastors.dateOfBirth}
+                                        onChange={handlePastorsChange} className="form-control" id="dateOfBirth" />
                                 </div>
-                                <div className='w-100'>
-                                    <label htmlFor="address" className="form-label">Address</label>
-                                    <input type="text" required value={pastors.address} onChange={handlePastorsChange} className="form-control" id="address" placeholder="Enter your address" />
-                                </div>
+                            </div>
+
+                            <div className='w-100'>
+                                <label htmlFor="address" className="form-label">Address</label>
+                                <input type="text" required value={pastors.address}
+                                    onChange={handlePastorsChange} className="form-control" id="address" placeholder="Enter your address" />
                             </div>
 
                             <div className='flex flex-wrap flex-fill'>
                                 <div className='flex-fill'>
                                     <label htmlFor="email" className="form-label">Email address</label>
-                                    <input type="email" value={pastors.email} onChange={handlePastorsChange} className="form-control" id="email" placeholder="name@example.com" />
+                                    <input type="email" value={pastors.email}
+                                        onChange={handlePastorsChange} className="form-control" id="email" placeholder="name@example.com" />
                                 </div>
                                 <div className='flex-fill'>
                                     <label htmlFor="contactNo" className="form-label">Contact No.</label>
-                                    <input type="number" value={pastors.contactNo} onChange={handlePastorsChange} className="form-control" id="contactNo" placeholder="Enter your contact no." />
+                                    <input type="number" value={pastors.contactNo}
+                                        onChange={handlePastorsChange} className="form-control" id="contactNo" placeholder="Enter your contact no." />
                                 </div>
                             </div>
 
@@ -162,7 +171,8 @@ const Register = () => {
                                 <div className='flex-fill'>
                                     <label htmlFor="password" className="form-label">Password</label>
                                     <div className='input-group'>
-                                        <input type="password" required value={pastors.password || ""} onChange={handlePastorsChange} className="form-control" id="password" placeholder="Enter your password" />
+                                        <input type="password" required value={pastors.password || ""}
+                                            onChange={handlePastorsChange} className="form-control" id="password" placeholder="Enter your password" />
                                         <button className="btn btn-light py-0 center btnShowPass" onClick={handleShowPass} type="button">
                                             <span className="material-symbols-outlined eye">
                                                 visibility
@@ -173,7 +183,8 @@ const Register = () => {
                                 <div className='flex-fill'>
                                     <label htmlFor="cpassword" className="form-label">Confirm Password</label>
                                     <div className='input-group'>
-                                        <input type="password" required value={pastors.cpassword || ""} onChange={handlePastorsChange} className="form-control" id="cpassword" placeholder="Confirm your password" />
+                                        <input type="password" required value={pastors.cpassword || ""}
+                                            onChange={handlePastorsChange} className="form-control" id="cpassword" placeholder="Confirm your password" />
                                         <button className="btn btn-light py-0 center btnShowPass" onClick={handleShowPass} type="button">
                                             <span className="material-symbols-outlined eye">
                                                 visibility
@@ -185,7 +196,8 @@ const Register = () => {
                         </div>
                         <div className='card-footer bg-transparent border-0'>
                             <button type="submit" className="btn btn-success">Register</button>
-                            <p className='mt-3'>Already have an account? <Link to='/cms/login' className="text-decoration-none badge bg-warning text-dark">Login</Link></p>
+                            <p className='mt-3'>Already have an account? <Link to='/cms/login'
+                                className="text-decoration-none badge bg-warning text-dark">Login</Link></p>
                         </div>
                     </form>
                 </div>
