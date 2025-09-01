@@ -26,7 +26,7 @@ class Churchgoer {
     }
 
     static read(churchID, callback) {
-        db.query('SELECT cg.id, cg.firstName, cg.middleName, cg.lastName, cg.email, cg.gender, cg.dateOfBirth, cg.address, cg.contactNo, cg.dateCreated FROM users u INNER JOIN church c ON c.churchID = u.churchID INNER JOIN churchgoer cg ON u.userID = cg.id WHERE c.churchID = ?', [churchID], callback);
+        db.query('SELECT cg.id, cg.firstName, cg.middleName, cg.lastName, cg.email, cg.gender, cg.dateOfBirth, cg.ministry, cg.address, cg.contactNo, cg.dateCreated FROM users u INNER JOIN church c ON c.churchID = u.churchID INNER JOIN churchgoer cg ON u.userID = cg.id WHERE c.churchID = ?', [churchID], callback);
     }
 
     static update(data, id, callback) {

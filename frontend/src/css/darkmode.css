@@ -1,0 +1,63 @@
+/* Dark mode */
+body.dark {
+    background-color: #1B1F22;
+    color: #eee;
+}
+
+body.dark .topbar {
+    background-color: #1B1F22;
+    color: #eee;
+}
+
+body.dark .hover:hover {
+    background-color: #1B1F22;
+    transition: background-color 0.3s ease;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+body.dark .titleNav,
+body.dark .icon {
+    color: #eee;
+}
+
+body.dark .card,
+body.dark .modal-content {
+    background-color: #212529;
+    color: #eee;
+}
+
+body.dark .searchIcon,
+body.dark .form-select,
+body.dark .form-control {
+    background-color: #212529;
+    border: solid 1px #666;
+    color: #eee;
+}
+
+body.dark .form-control::placeholder {
+    background-color: #212529;
+    color: #eee;
+}
+
+body.dark .actionButtons,
+body.dark .titleNav,
+body.dark .icon {
+    color: #fff;
+}
+
+body.dark .actionButtons:hover {
+    background-color: #333;
+    border-radius: 5px;
+    transition: 0.5s;
+}
+
+body.dark .hover.active {
+    background-color: #1B1F22;
+}
+
+body.dark .actionButtons.tab.active {
+    color: #fff;
+    border-radius: 5px;
+    transition: 0.5s;
+}
