@@ -52,6 +52,7 @@ const ViewAttendance = () => {
             Axios.get(`${url}/attendances`)
         ])
             .then(([churchgoersRes, attendanceRes]) => {
+
                 const churchgoers = churchgoersRes.data;
                 const attendances = attendanceRes.data;
 
